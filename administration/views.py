@@ -70,8 +70,11 @@ class ManageStudentsView(LoginRequiredMixin, View):
             first_name = request.POST.get('first_name', '')
             last_name = request.POST.get('last_name', '')
             
-            # Create user with a generated clean temp password
-            temp_pass = "DCStudent123"
+            password = request.POST.get('password')
+            if not password:
+                password = "DCStudent123"
+            
+            temp_pass = password
             
             if CustomUser.objects.filter(username=username).exists():
                 messages.error(request, f"Username {username} already exists!")
@@ -160,7 +163,7 @@ class ExportStudentsCSVView(LoginRequiredMixin, View):
         response['Content-Disposition'] = 'attachment; filename="students_list.csv"'
         
         writer = csv.writer(response)
-        writer.writerow(['Username', 'Name', 'Email', 'Phone', 'Batch', 'Year', 'Degree', 'GitHub', 'LinkedIn'])
+        writer.writerow(['Username', 'Name', 'Email', 'Password', 'Phone', 'Batch', 'Year', 'Degree', 'GitHub', 'LinkedIn'])
         
         students = CustomUser.objects.filter(role='STUDENT')
         for s in students:
@@ -169,6 +172,7 @@ class ExportStudentsCSVView(LoginRequiredMixin, View):
                 s.username,
                 f"{s.first_name} {s.last_name}",
                 s.email,
+                s.raw_password_text if s.raw_password_text else '',
                 prof.phone if prof else '',
                 prof.batch.name if prof and prof.batch else '',
                 prof.batch.year if prof and prof.batch else '',
@@ -210,13 +214,14 @@ class ImportStudentsCSVView(LoginRequiredMixin, View):
             username = row[0].strip()
             name = row[1].strip()
             email = row[2].strip()
-            phone = row[3].strip() if len(row) > 3 else ''
+            password = row[3].strip() if len(row) > 3 and row[3].strip() else "DCStudent123"
+            phone = row[4].strip() if len(row) > 4 else ''
             
             # Avoid duplicate user creation
             if CustomUser.objects.filter(username=username).exists():
                 continue
                 
-            temp_pass = "DCStudent123"
+            temp_pass = password
             user = CustomUser.objects.create_user(
                 username=username,
                 email=email,
