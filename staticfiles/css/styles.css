@@ -425,10 +425,25 @@ body {
         width: 100%;
         height: auto;
         position: relative;
+        transition: height 0.3s ease;
+    }
+    .sidebar.collapsed {
+        height: 75px;
+        overflow: hidden;
+        width: 100%;
+    }
+    .sidebar.collapsed .sidebar-brand div:first-child {
+        display: block;
+    }
+    .sidebar.collapsed .sidebar-link span, .sidebar.collapsed .sidebar-menu li {
+        display: block !important;
     }
     .main-content {
         margin-left: 0;
-        padding: 1.5rem;
+        padding: 1rem;
+    }
+    .main-content.expanded {
+        margin-left: 0;
     }
     .dashboard-wrapper {
         flex-direction: column;
