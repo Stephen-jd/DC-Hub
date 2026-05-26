@@ -1,314 +1,875 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}DC Learn - Sign In{% endblock %}
+{% block title %}Destination Career — Start Your Journey{% endblock %}
 
 {% block extra_head %}
 <style>
+    /* ── Reset for landing page ─────────────────────────────── */
     body {
-        background: linear-gradient(135deg, #0A1326 0%, #14284F 100%);
+        background: #ffffff;
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
+        display: block;
+        justify-content: unset;
+        align-items: unset;
         overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
     }
 
-    .login-split-container {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        max-width: 1200px;
-        width: 95%;
-        margin: auto;
-        gap: 3rem;
-        align-items: center;
-        padding: 2rem 0;
-    }
-
-    /* Left segment styling */
-    .left-promo-panel {
-        color: white;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .promo-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background-color: rgba(59, 130, 246, 0.15);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        padding: 0.4rem 1rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        width: fit-content;
-        color: #3B82F6;
-    }
-
-    .promo-title {
-        font-size: 3rem;
-        font-weight: 800;
-        line-height: 1.15;
-        letter-spacing: -1px;
-    }
-
-    .promo-description {
-        font-size: 1.05rem;
-        color: #94A3B8;
-        line-height: 1.6;
-    }
-
-    /* Device mockup wrapper */
-    .device-mockup {
-        background-color: #0F172A;
-        border: 10px solid #1E293B;
-        border-radius: 36px;
-        padding: 1.5rem 1rem;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        max-width: 380px;
-        width: 100%;
-        margin-left: auto;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .device-screen {
-        background-color: white;
-        border-radius: 24px;
-        padding: 2rem 1.5rem;
-        color: #1E293B;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .device-header {
+    /* ── Navbar ─────────────────────────────────────────────── */
+    .lp-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid #EEF2FF;
+        padding: 0.85rem 5%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.75rem;
-        color: #64748B;
-        font-weight: 600;
     }
-
-    /* Corporate Logo representation */
-    .logo-container {
+    .lp-nav-logo {
         display: flex;
         align-items: center;
-        background-color: white;
-        border-radius: 4px;
-        overflow: hidden;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    .lp-nav-logo .dc-box {
+        background: #0066fe;
+        color: #fff;
+        font-weight: 900;
+        font-size: 1.1rem;
+        padding: 0.3rem 0.65rem;
+        border-radius: 8px;
+        letter-spacing: -0.5px;
+    }
+    .lp-nav-logo .dc-name {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #0F172A;
+        letter-spacing: -0.3px;
+    }
+    .lp-nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .lp-nav-links a {
+        text-decoration: none;
+        color: #475569;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    .lp-nav-links a:hover { color: #0066fe; }
+    .lp-signin-btn {
+        background: #0066fe;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0.55rem 1.4rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .lp-signin-btn:hover {
+        background: #0052d4;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,102,254,0.3);
     }
 
-    .logo-blue-box {
-        background-color: #0066fe;
-        color: white;
-        font-weight: 900;
-        font-size: 1.2rem;
-        padding: 0.4rem 0.75rem;
-        border-radius: 4px;
+    /* ── Hero Section ───────────────────────────────────────── */
+    .lp-hero {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        padding: 4rem 5% 3rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+    .hero-left {
+        flex: 1.1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #EEF2FF;
+        color: #0066fe;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        width: fit-content;
+        border: 1px solid #C7D7FE;
+    }
+    .hero-title {
+        font-size: 2.7rem;
+        font-weight: 800;
+        color: #0F172A;
+        line-height: 1.2;
+        letter-spacing: -1px;
+        margin: 0;
+    }
+    .hero-title .typed-prefix {
+        color: #0F172A;
+    }
+    .typed-word {
+        color: #0066fe;
+        border-right: 3px solid #0066fe;
+        padding-right: 4px;
+        animation: blink-caret 0.75s step-end infinite;
+    }
+    @keyframes blink-caret {
+        0%, 100% { border-color: #0066fe; }
+        50% { border-color: transparent; }
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+        color: #64748B;
+        line-height: 1.65;
+        margin: 0;
+    }
+    .hero-subtitle span {
+        color: #0066fe;
+        font-weight: 600;
+    }
+    .hero-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+    .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        border: 1.5px solid #CBD5E1;
+        color: #334155;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        background: #fff;
+        transition: all 0.2s;
+    }
+    .hero-pill:hover {
+        border-color: #0066fe;
+        color: #0066fe;
+        background: #EEF2FF;
+    }
+    .hero-pill i { font-size: 0.75rem; }
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+    .btn-primary-lp {
+        background: #0066fe;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(0,102,254,0.3);
+    }
+    .btn-primary-lp:hover {
+        background: #0052d4;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,102,254,0.4);
+        color: #fff;
+    }
+    .btn-outline-lp {
+        background: transparent;
+        color: #0F172A;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.8rem 2rem;
+        border: 2px solid #CBD5E1;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s;
+    }
+    .btn-outline-lp:hover {
+        border-color: #0066fe;
+        color: #0066fe;
+    }
+    .hero-right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .hero-img {
+        width: 100%;
+        max-width: 480px;
+        animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    /* ── Stats row ──────────────────────────────────────────── */
+    .stats-row {
+        background: #F8FAFF;
+        border-top: 1px solid #E8EEFF;
+        border-bottom: 1px solid #E8EEFF;
+        padding: 1.5rem 5%;
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+    }
+    .stat-item {
+        text-align: center;
+    }
+    .stat-item .num {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #0066fe;
+        letter-spacing: -1px;
+    }
+    .stat-item .label {
+        font-size: 0.82rem;
+        color: #64748B;
+        font-weight: 500;
+        margin-top: 0.1rem;
+    }
+
+    /* ── Assessment Packs Section ───────────────────────────── */
+    .section-packs {
+        padding: 4rem 5%;
+        max-width: 1300px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+    }
+    .packs-img-wrap {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+    .packs-img {
+        width: 100%;
+        max-width: 420px;
+        border-radius: 16px;
+    }
+    .packs-content {
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #0066fe;
+    }
+    .section-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0F172A;
+        line-height: 1.25;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+    .feature-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+    .feature-tag {
+        border: 1.5px solid #CBD5E1;
+        color: #334155;
+        font-size: 0.83rem;
+        font-weight: 600;
+        padding: 0.45rem 1.1rem;
+        border-radius: 20px;
+        background: #fff;
+        transition: all 0.2s;
+        cursor: default;
+    }
+    .feature-tag:hover {
+        border-color: #0066fe;
+        color: #0066fe;
+        background: #EEF2FF;
+        transform: translateY(-2px);
+    }
+    .waiting-btn {
+        background: #0066fe;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0.7rem 1.8rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: fit-content;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(0,102,254,0.4); }
+        50% { box-shadow: 0 0 0 8px rgba(0,102,254,0); }
+    }
+
+    /* ── Tech Skills Section ────────────────────────────────── */
+    .section-skills {
+        background: #F8FAFF;
+        padding: 4rem 5%;
+    }
+    .section-skills-inner {
+        max-width: 1300px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 4rem;
+    }
+    .skills-content {
+        flex: 1.2;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        max-width: 340px;
+    }
+    .skill-card {
+        background: #fff;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 0.85rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.2s;
+        cursor: default;
+    }
+    .skill-card:hover {
+        border-color: #0066fe;
+        box-shadow: 0 4px 12px rgba(0,102,254,0.12);
+        transform: translateY(-3px);
+    }
+    .skill-card .skill-icon {
+        font-size: 1.5rem;
+    }
+    .skill-card .skill-name {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #475569;
+        text-align: center;
+    }
+    .skills-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .bottom-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 0.5rem;
+    }
+
+    /* ── Login Modal ────────────────────────────────────────── */
+    .lp-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(10,19,50,0.6);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.2s;
+    }
+    .lp-modal-overlay.open { display: flex; }
+    .lp-modal {
+        background: #fff;
+        border-radius: 20px;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        position: relative;
+        animation: slideUpFade 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-close {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        background: #F1F5F9;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        letter-spacing: -0.5px;
+        font-size: 0.85rem;
+        color: #475569;
+        transition: all 0.2s;
     }
-
-    .logo-text {
-        color: #0066fe;
+    .modal-close:hover { background: #E2E8F0; }
+    .modal-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .modal-logo .dc-box {
+        background: #0066fe;
+        color: #fff;
         font-weight: 900;
-        font-size: 1.35rem;
-        padding-left: 0.5rem;
+        font-size: 1.1rem;
+        padding: 0.3rem 0.65rem;
+        border-radius: 8px;
+    }
+    .modal-logo .dc-name {
+        font-weight: 800;
+        font-size: 1rem;
+        color: #0F172A;
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #0F172A;
+        margin: 0 0 0.4rem;
         letter-spacing: -0.5px;
     }
-
-    /* Form Fields */
-    .login-label {
-        font-size: 0.7rem;
-        font-weight: 800;
-        color: #1E293B;
+    .modal-subtitle {
+        font-size: 0.88rem;
+        color: #64748B;
+        margin: 0 0 2rem;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #374151;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 0.35rem;
-        display: block;
+        margin-bottom: 0.5rem;
     }
-
-    .login-input {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 0.75rem;
+    .form-input {
         width: 100%;
-        font-size: 0.85rem;
+        background: #F8FAFC;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+        font-family: 'Inter', sans-serif;
         outline: none;
-        transition: border-color 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
     }
-
-    .login-input:focus {
+    .form-input:focus {
         border-color: #0066fe;
+        box-shadow: 0 0 0 3px rgba(0,102,254,0.1);
+        background: #fff;
     }
-
-    .login-btn {
-        background-color: #1E293B;
-        color: white;
-        font-weight: 800;
-        font-size: 0.85rem;
-        padding: 0.85rem;
-        border-radius: 8px;
-        width: 100%;
-        border: none;
+    .pass-wrap { position: relative; }
+    .pass-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94A3B8;
         cursor: pointer;
-        text-transform: uppercase;
+        background: none;
+        border: none;
+        font-size: 0.95rem;
+    }
+    .submit-btn {
+        width: 100%;
+        background: #0F172A;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.95rem;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
         letter-spacing: 0.5px;
         margin-top: 0.5rem;
-        transition: background-color 0.2s;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .submit-btn:hover {
+        background: #0066fe;
+        box-shadow: 0 4px 14px rgba(0,102,254,0.35);
+        transform: translateY(-1px);
+    }
+    .modal-footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #94A3B8;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+    .error-box {
+        background: #FEF2F2;
+        border: 1px solid #FCA5A5;
+        color: #991B1B;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
     }
 
-    .login-btn:hover {
-        background-color: #0F172A;
+    /* ── Footer ─────────────────────────────────────────────── */
+    .lp-footer {
+        background: #0F172A;
+        color: #94A3B8;
+        text-align: center;
+        padding: 1.5rem 5%;
+        font-size: 0.82rem;
     }
+    .lp-footer span { color: #0066fe; font-weight: 700; }
 
-    @media (max-width: 768px) {
-        .login-split-container {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 2rem;
-        }
-        .promo-badge {
-            margin: auto;
-        }
-        .promo-title {
-            font-size: 2.2rem;
-        }
-        .device-mockup {
-            margin: auto;
-        }
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+        .lp-hero, .section-packs, .section-skills-inner { flex-direction: column; gap: 2rem; }
+        .hero-title { font-size: 2rem; }
+        .hero-right { order: -1; }
+        .packs-img-wrap { order: -1; }
+        .skills-grid { grid-template-columns: repeat(4, 1fr); }
+        .lp-nav-links { display: none; }
+        .stats-row { gap: 2rem; }
+    }
+    @media (max-width: 480px) {
+        .hero-title { font-size: 1.6rem; }
+        .section-title { font-size: 1.5rem; }
+        .skills-grid { grid-template-columns: repeat(3, 1fr); }
+        .lp-modal { padding: 1.5rem; margin: 1rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-split-container animate-zoom">
-    
-    <!-- Left panel (Copy match) -->
-    <div class="left-promo-panel">
-        <div class="promo-badge">
-            <i class="fa-solid fa-bolt"></i> Career Academy Accelerator
+
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="lp-nav">
+    <a href="{% url 'login' %}" class="lp-nav-logo">
+        <span class="dc-box">DC</span>
+        <span class="dc-name">Destination Career</span>
+    </a>
+    <ul class="lp-nav-links">
+        <li><a href="#">Courses</a></li>
+        <li><a href="#">Mock Tests</a></li>
+        <li><a href="#">Placements</a></li>
+        <li><a href="#">About</a></li>
+    </ul>
+    <button class="lp-signin-btn" onclick="openLoginModal()">Sign In &nbsp;→</button>
+</nav>
+
+<!-- ── Hero ──────────────────────────────────────────────── -->
+<section class="lp-hero">
+    <div class="hero-left">
+        <div class="hero-badge">
+            <i class="fa-solid fa-graduation-cap"></i> Python Full Stack — Batch PFS008
         </div>
-        <h1 class="promo-title">
-            Structured Training &<br>Industry Placement<br>Framework
+        <h1 class="hero-title">
+            Start your preparation<br>with <span class="typed-prefix">Destination Career:</span><br>
+            <span class="typed-word" id="typed-text"></span>
         </h1>
-        <p class="promo-description">
-            Welcome to the unified Destination Career LMS. Designed exclusively to transition trainee engineers into world-class software developers. Monitor curriculum milestones, track daily subject evaluations, view comprehensive mock interview assessments, and secure direct placement opportunities with top recruiters.
+        <p class="hero-subtitle">
+            <span>Interactive Courses</span>, Top notch Assessments,<br>
+            High yield Mock Tests and best Placements at one click away
         </p>
+        <div class="hero-pills">
+            <span class="hero-pill"><i class="fa-solid fa-video"></i> Mock Interview</span>
+            <span class="hero-pill"><i class="fa-solid fa-clipboard-list"></i> Test Series</span>
+            <span class="hero-pill"><i class="fa-solid fa-book-open"></i> Live Courses</span>
+            <span class="hero-pill"><i class="fa-solid fa-briefcase"></i> Job Placements</span>
+        </div>
+        <div class="hero-cta">
+            <button class="btn-primary-lp" onclick="openLoginModal()">
+                <i class="fa-solid fa-rocket"></i> Get Started
+            </button>
+            <a href="#assessment" class="btn-outline-lp">
+                <i class="fa-solid fa-play"></i> Learn More
+            </a>
+        </div>
     </div>
+    <div class="hero-right">
+        <img src="{% static 'img/hero_illustration.png' %}" alt="Student Learning" class="hero-img">
+    </div>
+</section>
 
-    <!-- Right panel (Device frame) -->
-    <div class="device-mockup">
-        <!-- Physical iPhone buttons in CSS -->
-        <div class="iphone-button-left-top"></div>
-        <div class="iphone-button-left-mid"></div>
-        <div class="iphone-button-left-bot"></div>
-        <div class="iphone-button-right"></div>
-        
-        <div class="device-screen">
-            <!-- iPhone Status Bar -->
-            <div class="device-header" style="padding-bottom: 0.8rem; margin-top: -1.2rem; border-bottom: 1px solid #F1F5F9; margin-bottom: 1.5rem;">
-                <span style="font-weight: 700; color: #0F172A; font-size: 0.85rem;"><i class="fa-solid fa-location-arrow" style="font-size: 0.75rem; margin-right: 2px;"></i> 09:41</span>
-                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #0F172A;">
-                    <i class="fa-solid fa-signal"></i>
-                    <span style="font-weight: 700; font-size: 0.75rem; letter-spacing: -0.2px;">5G</span>
-                    <i class="fa-solid fa-wifi"></i>
-                    <div style="display: flex; align-items: center; border: 1px solid #0F172A; padding: 1px; border-radius: 4px; height: 11px; width: 22px; position: relative;">
-                        <div style="background-color: #0F172A; height: 7px; width: 15px; border-radius: 2px;"></div>
-                        <div style="background-color: #0F172A; height: 4px; width: 2px; position: absolute; right: -3px; border-top-right-radius: 1px; border-bottom-right-radius: 1px;"></div>
-                    </div>
+<!-- ── Stats Row ─────────────────────────────────────────── -->
+<div class="stats-row">
+    <div class="stat-item">
+        <div class="num">10+</div>
+        <div class="label">Topics Covered</div>
+    </div>
+    <div class="stat-item">
+        <div class="num">5</div>
+        <div class="label">Expert Trainers</div>
+    </div>
+    <div class="stat-item">
+        <div class="num">100%</div>
+        <div class="label">Syllabus Tracked</div>
+    </div>
+    <div class="stat-item">
+        <div class="num">PFS008</div>
+        <div class="label">Active Batch</div>
+    </div>
+</div>
+
+<!-- ── Assessment Packs Section ─────────────────────────── -->
+<section class="section-packs" id="assessment">
+    <div class="packs-img-wrap">
+        <img src="{% static 'img/assessment_illustration.png' %}" alt="Assessment" class="packs-img">
+    </div>
+    <div class="packs-content">
+        <div class="section-label">Assessment Packs</div>
+        <h2 class="section-title">Get a choice of your<br>Assessment Packs</h2>
+        <div class="feature-tags">
+            <span class="feature-tag">✔ Designed by subject experts</span>
+            <span class="feature-tag">✔ Latest syllabus and pattern</span>
+            <span class="feature-tag">✔ Subject wise assessments</span>
+            <span class="feature-tag">✔ Detailed solution with Analysis</span>
+            <span class="feature-tag">✔ Topic wise model Questions</span>
+            <span class="feature-tag">✔ Live tests with real time experience</span>
+        </div>
+        <button class="waiting-btn" onclick="openLoginModal()">
+            <i class="fa-solid fa-bolt"></i> 500+ Tests are waiting for you...
+        </button>
+    </div>
+</section>
+
+<!-- ── Tech Skills Section ───────────────────────────────── -->
+<section class="section-skills">
+    <div class="section-skills-inner">
+        <div class="skills-content">
+            <div class="section-label">Curriculum</div>
+            <h2 class="section-title">Now it's easy to<br>Upskill yourself</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <span class="skill-icon">🐍</span>
+                    <span class="skill-name">Python</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🌐</span>
+                    <span class="skill-name">Django</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🧠</span>
+                    <span class="skill-name">Aptitude</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🗄️</span>
+                    <span class="skill-name">SQL</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🎨</span>
+                    <span class="skill-name">HTML/CSS</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">⚡</span>
+                    <span class="skill-name">JavaScript</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">⚛️</span>
+                    <span class="skill-name">React</span>
+                </div>
+                <div class="skill-card">
+                    <span class="skill-icon">🔧</span>
+                    <span class="skill-name">Git</span>
                 </div>
             </div>
-
-            <!-- Custom Destination Career Logo -->
-            <div class="logo-container" style="margin-bottom: 1.5rem;">
-                <div class="logo-blue-box" style="padding: 0.5rem 0.95rem; font-size: 1.35rem; border-radius: 6px;">DC</div>
-                <div class="logo-text" style="font-weight: 900 !important; font-size: 1.5rem !important; color: #0066fe; letter-spacing: -0.5px;">Destination Career</div>
+            <button class="waiting-btn" style="margin-top:0.5rem;" onclick="openLoginModal()">
+                <i class="fa-solid fa-graduation-cap"></i> Explore PFS008 Courses
+            </button>
+        </div>
+        <div class="skills-right">
+            <div class="section-label">Why choose us</div>
+            <h2 class="section-title">Structured training<br>to placement</h2>
+            <p style="color:#64748B; font-size:0.95rem; line-height:1.7; margin:0;">
+                The DC Hub LMS is exclusively built to transition engineers into industry-ready professionals. 
+                Each module is crafted with real-world assessments, mock interview simulations, and direct 
+                recruiter connections.
+            </p>
+            <div class="bottom-tags">
+                <span class="feature-tag">📚 Detailed Learning Path</span>
+                <span class="feature-tag">🎯 Focused Approach</span>
+                <span class="feature-tag">🤝 Expert Trainers</span>
+                <span class="feature-tag">🏆 Best Placement Rates</span>
             </div>
+        </div>
+    </div>
+</section>
 
-            {% if form.errors %}
-                <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; padding: 0.75rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;">
-                    Invalid username or password.
-                </div>
-            {% endif %}
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer class="lp-footer">
+    © 2026 <span>Destination Career</span> · All rights reserved · Built for PFS008 Batch
+</footer>
 
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                
-                <div style="margin-bottom: 1.25rem;">
-                    <label class="login-label" for="id_username" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Email Address / Username</label>
-                    <input class="login-input" type="text" name="username" id="id_username" required autofocus placeholder="Enter username or email" style="padding: 0.85rem; font-size: 0.95rem; border-radius: 10px;">
-                </div>
+<!-- ── Login Modal ───────────────────────────────────────── -->
+<div class="lp-modal-overlay" id="loginModal" onclick="closeOnOverlay(event)">
+    <div class="lp-modal">
+        <button class="modal-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-logo">
+            <span class="dc-box">DC</span>
+            <span class="dc-name">Destination Career</span>
+        </div>
+        <h2 class="modal-title">Welcome back 👋</h2>
+        <p class="modal-subtitle">Sign in to access your dashboard</p>
 
-                <div style="position: relative; margin-bottom: 1.25rem;">
-                    <label class="login-label" for="id_password" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Password</label>
-                    <input class="login-input" type="password" name="password" id="id_password" required placeholder="Enter password" style="padding: 0.85rem; font-size: 0.95rem; border-radius: 10px;">
-                    <span style="position: absolute; right: 12px; top: 38px; color: #64748B; cursor: pointer; font-size: 1rem;" onclick="togglePassword()">
+        {% if form.errors %}
+            <div class="error-box">
+                <i class="fa-solid fa-circle-exclamation"></i> Invalid username or password. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="id_username">Username</label>
+                <input class="form-input" type="text" name="username" id="id_username"
+                       required autofocus placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="id_password">Password</label>
+                <div class="pass-wrap">
+                    <input class="form-input" type="password" name="password" id="id_password"
+                           required placeholder="Enter your password">
+                    <button type="button" class="pass-toggle" onclick="togglePass()">
                         <i class="fa-regular fa-eye" id="toggle-icon"></i>
-                    </span>
+                    </button>
                 </div>
-
-                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.8rem;">
-                    <input type="checkbox" id="show-pass-chk" onclick="togglePasswordCheckbox()" style="cursor: pointer; width: 16px; height: 16px;">
-                    <label for="show-pass-chk" style="font-size: 0.8rem; font-weight: 700; color: #475569; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Show Password</label>
-                </div>
-
-                <button type="submit" class="login-btn" style="padding: 1rem; font-size: 0.95rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">Submit</button>
-            </form>
-
-            <div style="text-align: center; font-size: 0.8rem; color: #64748B; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                <i class="fa-solid fa-lock" style="font-size: 0.75rem;"></i> DC Hub - Secure Session
             </div>
-            
-            <!-- Home indicator bar -->
-            <div class="iphone-home-bar"></div>
+            <button type="submit" class="submit-btn">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+        </form>
+
+        <div class="modal-footer">
+            <i class="fa-solid fa-lock" style="font-size:0.75rem;"></i> Secure Session · DC Hub LMS
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    function togglePassword() {
-        const passInput = document.getElementById('id_password');
-        const icon = document.getElementById('toggle-icon');
-        const checkbox = document.getElementById('show-pass-chk');
-        if (passInput.type === 'password') {
-            passInput.type = 'text';
-            icon.classList.remove('fa-regular', 'fa-eye');
-            icon.classList.add('fa-solid', 'fa-eye-slash');
-            checkbox.checked = true;
+    // ── Typed text effect ───────────────────────────────────
+    const words = ['Mock Series.', 'Test Series.', 'Live Courses.', 'Job Placements.'];
+    let wIdx = 0, cIdx = 0, deleting = false;
+    const el = document.getElementById('typed-text');
+
+    function type() {
+        const current = words[wIdx];
+        if (!deleting) {
+            el.textContent = current.substring(0, cIdx + 1);
+            cIdx++;
+            if (cIdx === current.length) {
+                deleting = true;
+                setTimeout(type, 1800);
+                return;
+            }
+            setTimeout(type, 90);
         } else {
-            passInput.type = 'password';
-            icon.classList.remove('fa-solid', 'fa-eye-slash');
-            icon.classList.add('fa-regular', 'fa-eye');
-            checkbox.checked = false;
+            el.textContent = current.substring(0, cIdx - 1);
+            cIdx--;
+            if (cIdx === 0) {
+                deleting = false;
+                wIdx = (wIdx + 1) % words.length;
+            }
+            setTimeout(type, 50);
+        }
+    }
+    setTimeout(type, 600);
+
+    // ── Login modal ─────────────────────────────────────────
+    function openLoginModal() {
+        document.getElementById('loginModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('id_username').focus(), 300);
+    }
+    function closeLoginModal() {
+        document.getElementById('loginModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function closeOnOverlay(e) {
+        if (e.target === document.getElementById('loginModal')) closeLoginModal();
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLoginModal(); });
+
+    // Auto-open modal if there are form errors (failed login attempt)
+    {% if form.errors %}
+        window.addEventListener('load', openLoginModal);
+    {% endif %}
+
+    // ── Password toggle ──────────────────────────────────────
+    function togglePass() {
+        const inp = document.getElementById('id_password');
+        const ico = document.getElementById('toggle-icon');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            ico.className = 'fa-solid fa-eye-slash';
+        } else {
+            inp.type = 'password';
+            ico.className = 'fa-regular fa-eye';
         }
     }
 
-    function togglePasswordCheckbox() {
-        const passInput = document.getElementById('id_password');
-        const icon = document.getElementById('toggle-icon');
-        const checkbox = document.getElementById('show-pass-chk');
-        if (checkbox.checked) {
-            passInput.type = 'text';
-            icon.classList.remove('fa-regular', 'fa-eye');
-            icon.classList.add('fa-solid', 'fa-eye-slash');
-        } else {
-            passInput.type = 'password';
-            icon.classList.remove('fa-solid', 'fa-eye-slash');
-            icon.classList.add('fa-regular', 'fa-eye');
-        }
-    }
+    // ── Scroll animation on feature tags ─────────────────────
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = (i * 0.08) + 's';
+                entry.target.classList.add('animate-zoom');
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.feature-tag, .skill-card').forEach(el => observer.observe(el));
 </script>
 {% endblock %}
