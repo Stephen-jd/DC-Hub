@@ -111,7 +111,7 @@
                         <div style="font-size: 0.75rem; font-weight: 700; margin-top: 0.25rem;">Select Institution</div>
                     </div>
                     <div>
-                        <button class="btn" style="background-color: #334155; color: white; border-radius: 4px; padding: 0.5rem 1rem; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Create Batch</button>
+                        <button class="btn" style="background-color: #334155; color: white; border-radius: 4px; padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="document.getElementById('add-batch-modal').style.display='flex'"><i class="fa-solid fa-plus"></i> Create Batch</button>
                     </div>
                 </div>
             </div>
@@ -158,6 +158,29 @@
             </section>
         </div>
 
+        <!-- Create Batch Modal Box -->
+        <div id="add-batch-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 9999;">
+            <div style="background-color: white; max-width: 400px; width: 95%; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color);">
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Create New Batch</h3>
+                <form action="{% url 'manage_batches' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+                    <div class="form-group">
+                        <label class="form-label">Batch Name</label>
+                        <input type="text" name="name" class="form-input" placeholder="e.g. PFS009" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Passout Year</label>
+                        <input type="number" name="year" class="form-input" placeholder="Year" required value="2026">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-batch-modal').style.display='none'">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Batch</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Placeholder Tabs for New Sidebar Links -->
         <div id="institutions-tab" class="tab-content">
             <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Institutions</h2>
@@ -170,85 +193,39 @@
         </div>
 
         <div id="users-tab" class="tab-content">
-            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Users</h2>
-            <p style="color: var(--text-muted);">View all users here.</p>
-            <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="showTab('student-database')">Go to Students Database</button>
-                <button class="btn btn-primary" onclick="showTab('trainer-assign')" style="margin-left: 0.5rem;">Go to Trainers</button>
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                <!-- Bulk Import Form -->
+                <div style="flex: 1; min-width: 300px;">
+                    <section style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1rem;"><i class="fa-solid fa-file-excel" style="color: var(--success);"></i> Bulk Import Students via CSV File</h3>
+                        <form action="{% url 'import_students' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                                <input class="form-input" type="text" name="batch_name" required placeholder="Create Batch Name (e.g. PFS009)">
+                                <input class="form-input" type="number" name="batch_year" required placeholder="Year" value="2026">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="excel_f">Upload CSV student details list</label>
+                                <input class="form-input" type="file" id="excel_f" name="csv_file" required accept=".csv">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Execute CSV Bulk Upload</button>
+                        </form>
+                    </section>
+                </div>
+
+                <!-- Add Single User Actions -->
+                <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1rem;">Manual User Creation</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Create a single student manually and assign them to a batch. Passwords are auto-generated.</p>
+                    <button class="btn btn-primary" onclick="openAddStudentModal()" style="font-size: 1rem; padding: 0.75rem 1.5rem;"><i class="fa-solid fa-user-plus"></i> Add Single Student</button>
+                </div>
             </div>
-        </div>
 
-        <div id="search-user-tab" class="tab-content">
-            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Search User</h2>
-            <input type="text" class="form-input" placeholder="Search by name, email, or role..." style="max-width: 500px;">
-        </div>
-
-        <!-- Legacy Tabs that are still accessible -->
-        <div id="trainer-assign-tab" class="tab-content">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <section id="trainer-assign" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
-                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-chalkboard-user" style="color: var(--primary-blue);"></i> Assign Technologies to Trainer</h3>
-                    
-                    <form action="{% url 'assign_trainer_batch' %}" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label class="form-label" for="tr_select">Trainer / Faculty</label>
-                            <select class="form-select" id="tr_select" name="trainer" required>
-                                {% for tr in trainers %}
-                                    <option value="{{ tr.id }}">{{ tr.username }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="bt_select">Target Batch</label>
-                            <select class="form-select" id="bt_select" name="batch" required>
-                                {% for bt in batches %}
-                                    <option value="{{ bt.id }}">{{ bt.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="tech_inp">Technologies covered (JFS, PFS, etc.)</label>
-                            <input class="form-input" type="text" id="tech_inp" name="technologies" required placeholder="e.g. Java Fullstack">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="start_d">Track Start Date</label>
-                            <input class="form-input" type="date" id="start_d" name="started_at" required value="2026-05-26">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Assign Course & Batch</button>
-                    </form>
-                </section>
-
-                <section style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
-                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-file-excel" style="color: var(--success);"></i> Bulk Import Students via CSV File</h3>
-                    <form action="{% url 'import_students' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
-                            <input class="form-input" type="text" name="batch_name" required placeholder="Create Batch Name (e.g. PFS009)">
-                            <input class="form-input" type="number" name="batch_year" required placeholder="Year" value="2026">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="excel_f">Upload CSV student details list</label>
-                            <input class="form-input" type="file" id="excel_f" name="csv_file" required accept=".csv">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Execute CSV Bulk Upload</button>
-                    </form>
-                </section>
-            </div>
-        </div>
-
-        <!-- Tab 4: Students Database -->
-        <div id="student-database-tab" class="tab-content">
-            <section id="student-database" style="margin-bottom: 4rem;">
+            <section id="student-database-users" style="margin-bottom: 4rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark);">
-                        <i class="fa-solid fa-users" style="color: var(--primary-blue);"></i> Registered Student Database
+                        <i class="fa-solid fa-users" style="color: var(--primary-blue);"></i> Registered Users Database
                     </h2>
-                    <button class="btn btn-primary" onclick="openAddStudentModal()"><i class="fa-solid fa-user-plus"></i> Add Single Student</button>
                 </div>
 
                 <!-- Sorting selection bar -->
@@ -321,6 +298,60 @@
                     </table>
                 </div>
             </section>
+        </div>
+
+        <div id="search-user-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Search User</h2>
+            <input type="text" class="form-input" placeholder="Search by name, email, or role..." style="max-width: 500px;">
+        </div>
+
+        <!-- Legacy Tabs that are still accessible -->
+        <div id="trainer-assign-tab" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <section id="trainer-assign" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-chalkboard-user" style="color: var(--primary-blue);"></i> Assign Technologies to Trainer</h3>
+                    
+                    <form action="{% url 'assign_trainer_batch' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" for="tr_select">Trainer / Faculty</label>
+                            <select class="form-select" id="tr_select" name="trainer" required>
+                                {% for tr in trainers %}
+                                    <option value="{{ tr.id }}">{{ tr.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bt_select">Target Batch</label>
+                            <select class="form-select" id="bt_select" name="batch" required>
+                                {% for bt in batches %}
+                                    <option value="{{ bt.id }}">{{ bt.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="tech_inp">Technologies covered (JFS, PFS, etc.)</label>
+                            <input class="form-input" type="text" id="tech_inp" name="technologies" required placeholder="e.g. Java Fullstack">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="start_d">Track Start Date</label>
+                            <input class="form-input" type="date" id="start_d" name="started_at" required value="2026-05-26">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Assign Course & Batch</button>
+                    </form>
+                </section>
+
+                <!-- CSV Import Moved to Users Tab -->
+            </div>
+        </div>
+
+        <!-- Old Student Database View Replaced by Users Tab -->
+        <div id="student-database-tab" class="tab-content">
+            <p style="color: var(--text-muted);">Please use the Users tab.</p>
         </div>
     </div>
 </div>
