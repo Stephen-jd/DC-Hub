@@ -10,25 +10,25 @@
             <a href="#" class="sidebar-brand" style="text-decoration: none;">
                 <div style="color: white; font-weight: 800 !important; font-size: 1.4rem !important; letter-spacing: -0.5px;">Instacks</div>
             </a>
-            <i class="fa-solid fa-bars" style="color: #64748b; font-size: 1.2rem; cursor: pointer;"></i>
+            <i class="fa-solid fa-bars" style="color: #64748b; font-size: 1.2rem; cursor: pointer;" onclick="toggleSidebar()"></i>
         </div>
         <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: -1rem -1.5rem 1rem -1.5rem;"></div>
         <ul class="sidebar-menu">
-            <li><a href="#dashboard" class="sidebar-link" onclick="showTab('dashboard')"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-            <li><a href="/" class="sidebar-link"><i class="fa-solid fa-house"></i> Homepage</a></li>
+            <li><a href="#dashboard" class="sidebar-link" onclick="showTab('dashboard')"><i class="fa-solid fa-table-cells-large"></i> <span>Dashboard</span></a></li>
+            <li><a href="/" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Homepage</span></a></li>
             
             <li style="margin-top: 1.5rem; padding-left: 1.15rem; font-size: 0.75rem; font-weight: 800; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase;">Institutions</li>
-            <li><a href="#institutions" class="sidebar-link" onclick="showTab('institutions')"><i class="fa-solid fa-desktop"></i> Institutions</a></li>
-            <li><a href="#batch-years" class="sidebar-link" onclick="showTab('batch-years')"><i class="fa-solid fa-desktop"></i> Batch Years</a></li>
-            <li><a href="#batches" class="sidebar-link active" onclick="showTab('batches')"><i class="fa-solid fa-desktop"></i> Batches</a></li>
-            <li><a href="#users" class="sidebar-link" onclick="showTab('users')"><i class="fa-solid fa-user-group"></i> Users</a></li>
-            <li><a href="#search-user" class="sidebar-link" onclick="showTab('search-user')"><i class="fa-solid fa-magnifying-glass"></i> Search User</a></li>
+            <li><a href="#institutions" class="sidebar-link" onclick="showTab('institutions')"><i class="fa-solid fa-desktop"></i> <span>Institutions</span></a></li>
+            <li><a href="#batch-years" class="sidebar-link" onclick="showTab('batch-years')"><i class="fa-solid fa-desktop"></i> <span>Batch Years</span></a></li>
+            <li><a href="#batches" class="sidebar-link active" onclick="showTab('batches')"><i class="fa-solid fa-desktop"></i> <span>Batches</span></a></li>
+            <li><a href="#users" class="sidebar-link" onclick="showTab('users')"><i class="fa-solid fa-user-group"></i> <span>Users</span></a></li>
+            <li><a href="#search-user" class="sidebar-link" onclick="showTab('search-user')"><i class="fa-solid fa-magnifying-glass"></i> <span>Search User</span></a></li>
 
             <li style="margin-top: auto;">
                 <form action="{% url 'logout' %}" method="post" id="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="sidebar-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
-                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                        <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
                     </button>
                 </form>
             </li>
@@ -78,20 +78,25 @@
 
             <!-- Overall metrics cards -->
             <section id="stats" class="card-grid" style="margin-bottom: 3rem;">
-                <div class="stat-card" style="cursor: pointer;" onclick="showTab('student-database')">
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('users')">
                     <span class="stat-title">Total Active Students</span>
                     <div class="stat-value">{{ total_students }}</div>
                     <p style="font-size: 0.75rem; color: var(--text-muted);">Registered in DC Master database</p>
                 </div>
-                <div class="stat-card" style="cursor: pointer;" onclick="showTab('batches-control')">
-                    <span class="stat-title">Created Batches</span>
-                    <div class="stat-value">{{ total_batches }}</div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted);">PFS008 and passout pipelines</p>
-                </div>
-                <div class="stat-card" style="cursor: pointer;" onclick="showTab('trainer-assign')">
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('users')">
                     <span class="stat-title">Active Trainers</span>
                     <div class="stat-value">{{ total_trainers }}</div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted);">Instructors delivering technology tracks</p>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Instructors delivering tech tracks</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('users')">
+                    <span class="stat-title">Business Dev (BD)</span>
+                    <div class="stat-value">{{ total_bd }}</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Corporate relations team</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('batches')">
+                    <span class="stat-title">Created Batches</span>
+                    <div class="stat-value">{{ total_batches }}</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Active learning pipelines</p>
                 </div>
             </section>
         </div>
@@ -201,7 +206,12 @@
                         <form action="{% url 'import_students' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
-                                <input class="form-input" type="text" name="batch_name" required placeholder="Create Batch Name (e.g. PFS009)">
+                                <select name="batch_name" class="form-input" required>
+                                    <option value="">-- Map to Target Batch --</option>
+                                    {% for bt in batches %}
+                                        <option value="{{ bt.name }}">{{ bt.name }}</option>
+                                    {% endfor %}
+                                </select>
                                 <input class="form-input" type="number" name="batch_year" required placeholder="Year" value="2026">
                             </div>
                             <div class="form-group">
@@ -493,6 +503,13 @@
 
     function closeEditBatchModal() {
         document.getElementById('edit-batch-modal').style.display = 'none';
-    }
-</script>
+        }
+    </script>
+    
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+    </script>
 {% endblock %}

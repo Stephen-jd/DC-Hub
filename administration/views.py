@@ -18,6 +18,7 @@ class AdminDashboardView(LoginRequiredMixin, View):
         total_students = CustomUser.objects.filter(role='STUDENT').count()
         total_batches = Batch.objects.count()
         total_trainers = CustomUser.objects.filter(role='TRAINER').count()
+        total_bd = CustomUser.objects.filter(role='BD').count()
         
         # Batch statistics for diagram
         batch_counts = Batch.objects.annotate(student_count=Count('students')).order_by('-year')
@@ -46,6 +47,7 @@ class AdminDashboardView(LoginRequiredMixin, View):
             'total_students': total_students,
             'total_batches': total_batches,
             'total_trainers': total_trainers,
+            'total_bd': total_bd,
             'batch_counts': batch_counts,
             'mock_summary': mock_summary,
             'students': student_list[:100], # Paginate for visual performance
