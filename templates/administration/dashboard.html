@@ -6,15 +6,24 @@
 <div class="dashboard-wrapper">
     <!-- Sidebar -->
     <div class="sidebar">
-        <a href="#" class="sidebar-brand" style="display: flex; align-items: center; text-decoration: none;">
-            <div style="background-color: #0066fe; color: white; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 0.65rem; border-radius: 6px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;">DC</div>
-            <div style="color: white; font-weight: 900 !important; font-size: 1.25rem !important; padding-left: 0.5rem; line-height: 1.2; letter-spacing: -0.5px; text-transform: uppercase;">Destination Career</div>
-        </a>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <a href="#" class="sidebar-brand" style="text-decoration: none;">
+                <div style="color: white; font-weight: 800 !important; font-size: 1.4rem !important; letter-spacing: -0.5px;">Instacks</div>
+            </a>
+            <i class="fa-solid fa-bars" style="color: #64748b; font-size: 1.2rem; cursor: pointer;"></i>
+        </div>
+        <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: -1rem -1.5rem 1rem -1.5rem;"></div>
         <ul class="sidebar-menu">
-            <li><a href="#stats" class="sidebar-link active" onclick="showTab('stats')"><i class="fa-solid fa-gauge-high"></i> Dashboard Home</a></li>
-            <li><a href="#batches-control" class="sidebar-link" onclick="showTab('batches-control')"><i class="fa-solid fa-layer-group"></i> Batches Control</a></li>
-            <li><a href="#trainer-assign" class="sidebar-link" onclick="showTab('trainer-assign')"><i class="fa-solid fa-chalkboard-user"></i> Trainer Assignments</a></li>
-            <li><a href="#student-database" class="sidebar-link" onclick="showTab('student-database')"><i class="fa-solid fa-users"></i> Students Database</a></li>
+            <li><a href="#dashboard" class="sidebar-link" onclick="showTab('dashboard')"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
+            <li><a href="/" class="sidebar-link"><i class="fa-solid fa-house"></i> Homepage</a></li>
+            
+            <li style="margin-top: 1.5rem; padding-left: 1.15rem; font-size: 0.75rem; font-weight: 800; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase;">Institutions</li>
+            <li><a href="#institutions" class="sidebar-link" onclick="showTab('institutions')"><i class="fa-solid fa-desktop"></i> Institutions</a></li>
+            <li><a href="#batch-years" class="sidebar-link" onclick="showTab('batch-years')"><i class="fa-solid fa-desktop"></i> Batch Years</a></li>
+            <li><a href="#batches" class="sidebar-link active" onclick="showTab('batches')"><i class="fa-solid fa-desktop"></i> Batches</a></li>
+            <li><a href="#users" class="sidebar-link" onclick="showTab('users')"><i class="fa-solid fa-user-group"></i> Users</a></li>
+            <li><a href="#search-user" class="sidebar-link" onclick="showTab('search-user')"><i class="fa-solid fa-magnifying-glass"></i> Search User</a></li>
+
             <li style="margin-top: auto;">
                 <form action="{% url 'logout' %}" method="post" id="logout-form">
                     {% csrf_token %}
@@ -50,7 +59,7 @@
         {% endif %}
 
         <!-- Tab 1: Dashboard Home / Stats -->
-        <div id="stats-tab" class="tab-content active">
+        <div id="dashboard-tab" class="tab-content">
             <!-- Auto-sliding Info Banner -->
             <div class="slider-container">
                 <div class="slider-wrapper" id="adminSlider">
@@ -87,20 +96,28 @@
             </section>
         </div>
 
-        <!-- Tab 2: Batches Control -->
-        <div id="batches-control-tab" class="tab-content">
-            <section id="batches-control" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-layer-group" style="color: var(--primary-blue);"></i> Batches Management</h3>
-                
-                <form action="{% url 'manage_batches' %}" method="post" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="add">
-                    <input type="text" name="name" class="form-input" placeholder="e.g. PFS009" required style="flex: 2;">
-                    <input type="number" name="year" class="form-input" placeholder="Year" required style="flex: 1;" value="2026">
-                    <button type="submit" class="btn btn-primary">Create Batch</button>
-                </form>
+        <!-- Tab: Batches -->
+        <div id="batches-tab" class="tab-content active">
+            <div style="background-color: white; border: 1px solid var(--border-color); padding: 1.5rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 0.5rem;">Filter Batches:</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select class="form-input" style="width: 400px; padding: 0.5rem; border-color: #93C5FD; background-color: #F8FAFF;">
+                                <option>-- Select Institution --</option>
+                            </select>
+                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 4px;">Go</button>
+                        </div>
+                        <div style="font-size: 0.75rem; font-weight: 700; margin-top: 0.25rem;">Select Institution</div>
+                    </div>
+                    <div>
+                        <button class="btn" style="background-color: #334155; color: white; border-radius: 4px; padding: 0.5rem 1rem; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Create Batch</button>
+                    </div>
+                </div>
+            </div>
 
-                <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.75rem;">Batch Student Enrollments Diagram</h4>
+            <section id="batches-control" style="background-color: white; border: 1px solid var(--border-color); padding: 1.5rem;">
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-bottom: 1rem;">Batch List</h4>
                 <div class="table-container" style="margin-bottom: 0;">
                     <table class="data-table">
                         <thead>
@@ -141,7 +158,32 @@
             </section>
         </div>
 
-        <!-- Tab 3: Trainer Assignments -->
+        <!-- Placeholder Tabs for New Sidebar Links -->
+        <div id="institutions-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Institutions</h2>
+            <p style="color: var(--text-muted);">Manage your institutions here.</p>
+        </div>
+        
+        <div id="batch-years-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Batch Years</h2>
+            <p style="color: var(--text-muted);">Manage batch years here.</p>
+        </div>
+
+        <div id="users-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Users</h2>
+            <p style="color: var(--text-muted);">View all users here.</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="showTab('student-database')">Go to Students Database</button>
+                <button class="btn btn-primary" onclick="showTab('trainer-assign')" style="margin-left: 0.5rem;">Go to Trainers</button>
+            </div>
+        </div>
+
+        <div id="search-user-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Search User</h2>
+            <input type="text" class="form-input" placeholder="Search by name, email, or role..." style="max-width: 500px;">
+        </div>
+
+        <!-- Legacy Tabs that are still accessible -->
         <div id="trainer-assign-tab" class="tab-content">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <section id="trainer-assign" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
