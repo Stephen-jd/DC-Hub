@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "env": {
+    "VERCEL": "1"
+  },
   "builds": [
     {
       "src": "dc_master/wsgi.py",
@@ -8,6 +11,10 @@
         "maxLambdaSize": "15mb",
         "runtime": "python3.12"
       }
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
