@@ -641,6 +641,13 @@
 
 {% block content %}
 
+<!-- ── Video Splash Screen Preloader ──────────────────────── -->
+<div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; background: white; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease-in-out;">
+    <video id="splash-video" autoplay muted playsinline style="width: 100%; max-width: 600px; height: auto;">
+        <source src="{% static 'video/splash.mp4' %}" type="video/mp4">
+    </video>
+</div>
+
 <!-- ── Navbar ─────────────────────────────────────────────── -->
 <nav class="lp-nav">
     <a href="{% url 'login' %}" class="lp-nav-logo">
@@ -693,20 +700,20 @@
 <!-- ── Stats Row ─────────────────────────────────────────── -->
 <div class="stats-row">
     <div class="stat-item">
-        <div class="num">12+</div>
-        <div class="label">Compilers</div>
+        <div class="num">15+</div>
+        <div class="label">Tech Stacks</div>
     </div>
     <div class="stat-item">
-        <div class="num">3</div>
-        <div class="label">Full Stack Tracks</div>
+        <div class="num">500+</div>
+        <div class="label">Enrolled Students</div>
     </div>
     <div class="stat-item">
-        <div class="num">30+</div>
-        <div class="label">Technologies</div>
+        <div class="num">5+</div>
+        <div class="label">Expert Trainers</div>
     </div>
     <div class="stat-item">
-        <div class="num">100%</div>
-        <div class="label">Placement Support</div>
+        <div class="num">10k+</div>
+        <div class="label">Mocks Done</div>
     </div>
 </div>
 
@@ -918,6 +925,35 @@
         if (e.target === document.getElementById('loginModal')) closeLoginModal();
     }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLoginModal(); });
+
+    // ── Splash Screen ────────────────────────────────────────
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        const video = document.getElementById('splash-video');
+        let hidden = false;
+        
+        function hideSplash() {
+            if (hidden) return;
+            hidden = true;
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 500);
+        }
+        
+        // Hide scroll while splash is active
+        document.body.style.overflow = 'hidden';
+        
+        if (video) {
+            // Unmute when playing if possible (optional), but muted is safer for autoplay
+            video.play().catch(e => console.log('Autoplay blocked', e));
+            video.addEventListener('ended', hideSplash);
+        }
+        
+        // Fallback in case video fails or takes too long
+        setTimeout(hideSplash, 6000);
+    });
 
     // Auto-open modal if there are form errors (failed login attempt)
     {% if form.errors %}
