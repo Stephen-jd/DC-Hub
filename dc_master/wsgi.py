@@ -1,48 +1,31 @@
 """
 WSGI config for dc_master project.
-Handles Vercel cold-start: copies pre-seeded SQLite DB to /tmp and runs migrations.
+On Vercel cold-start: copies the pre-seeded SQLite DB from the project bundle
+to /tmp (the only writable location), then auto-migrates and seeds if needed.
 """
 
 import os
 import shutil
+from pathlib import Path
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dc_master.settings")
 
 # ── Vercel cold-start bootstrap ────────────────────────────────────────────────
 if os.environ.get('VERCEL') == '1':
-    tmp_db = '/tmp/db.sqlite3'
-    flag_file = '/tmp/.db_ready'
+    tmp_db   = '/tmp/db.sqlite3'
+    flag     = '/tmp/.db_ready'
 
-    if not os.path.exists(flag_file):
-        # Get the source DB shipped with the project (pre-seeded)
-        from pathlib import Path
+    if not os.path.exists(flag):
+        # Copy the pre-seeded DB bundled with the project
         source_db = Path(__file__).resolve().parent.parent / 'db.sqlite3'
-
-        if source_db.exists():
+        if source_db.exists() and not os.path.exists(tmp_db):
             shutil.copy2(str(source_db), tmp_db)
 
-        # Run any pending migrations
-        from django.core.management import call_command
-        import django
-        django.setup()
-        try:
-            call_command('migrate', '--run-syncdb', verbosity=0)
-        except Exception:
-            pass
-
-        # Seed only if no users exist yet
-        try:
-            from accounts.models import CustomUser
-            if not CustomUser.objects.exists():
-                call_command('seed_data', verbosity=0)
-        except Exception:
-            pass
-
-        # Mark DB as ready so next request in same container skips this
-        with open(flag_file, 'w') as f:
+        # Mark ready — subsequent warm requests skip bootstrap
+        with open(flag, 'w') as f:
             f.write('1')
 
-# ── WSGI app ───────────────────────────────────────────────────────────────────
-from django.core.wsgi import get_wsgi_application
+# ── WSGI application ───────────────────────────────────────────────────────────
+from django.core.wsgi import get_wsgi_application  # noqa: E402
 application = get_wsgi_application()
 app = application
