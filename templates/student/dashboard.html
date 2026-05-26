@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+
+{% block title %}DC Learn - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-brand" style="display: flex; align-items: center; text-decoration: none;">
+            <div style="background-color: #0066fe; color: white; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 0.65rem; border-radius: 6px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;">DC</div>
+            <div style="color: white; font-weight: 900 !important; font-size: 1.25rem !important; padding-left: 0.5rem; line-height: 1.2; letter-spacing: -0.5px; text-transform: uppercase;">Destination Career</div>
+        </a>
+        <ul class="sidebar-menu">
+            <li><a href="#overview" class="sidebar-link active" onclick="showTab('overview')"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
+            <li><a href="#academic" class="sidebar-link" onclick="showTab('academic')"><i class="fa-solid fa-graduation-cap"></i> Academic & Exams</a></li>
+            <li><a href="#placement" class="sidebar-link" onclick="showTab('placement')"><i class="fa-solid fa-briefcase"></i> Placements</a></li>
+            <li><a href="#doubts" class="sidebar-link" onclick="showTab('doubts')"><i class="fa-solid fa-circle-question"></i> Doubts</a></li>
+            <li><a href="#profile" class="sidebar-link" onclick="showTab('profile')"><i class="fa-solid fa-user"></i> My Profile</a></li>
+            <li style="margin-top: auto;">
+                <form action="{% url 'logout' %}" method="post" id="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--primary-dark);">Welcome back, {{ request.user.first_name|default:request.user.username }}!</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Batch: <span style="font-weight: 600; color: var(--primary-blue);">{{ batch.name }}</span> (Passing Year: {{ batch.year }})</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="background-color: #DBEAFE; color: var(--primary-blue); padding: 0.5rem 1rem; border-radius: 30px; font-weight: 600; font-size: 0.85rem;">Student</span>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div style="margin-bottom: 1.5rem;">
+                {% for message in messages %}
+                    <div style="background-color: {% if message.tags == 'success' %}#D1FAE5{% else %}#FEF3C7{% endif %}; color: {% if message.tags == 'success' %}#065F46{% else %}#92400E{% endif %}; padding: 0.75rem 1.25rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 500;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Tab 1: Overview -->
+        <div id="overview-tab" class="tab-content active">
+            <!-- Auto-sliding Image/Job Carousel Banner -->
+            <div class="slider-container">
+                <div class="slider-wrapper" id="bannerSlider">
+                    <!-- Standard Slide 1 -->
+                    <div class="slide-item" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80');">
+                        <span style="background-color: var(--primary-blue); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.50rem; border-radius: 4px; width: fit-content; text-transform: uppercase;">LMS ACCELERATOR</span>
+                        <h2>Welcome to Destination Career LMS Portal</h2>
+                        <p>Track your daily learning topics, complete assessments, monitor mock interview reviews, and explore direct recruiting avenues.</p>
+                    </div>
+                    
+                    <!-- Loop Job postings as Slide Items -->
+                    {% for job in available_jobs %}
+                        <div class="slide-item" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80');">
+                            <span style="background-color: #10B981; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.50rem; border-radius: 4px; width: fit-content; text-transform: uppercase;">NEW PLACEMENT OPPORTUNITY</span>
+                            <h2>{{ job.title }} at {{ job.company_name }}</h2>
+                            <p>Eligible stack: {{ job.tech_stacks }} | Package: {{ job.salary_package }}</p>
+                            <div style="margin-top: 0.5rem;">
+                                <button class="btn btn-primary" style="font-size: 0.9rem; padding: 0.6rem 1.25rem;" onclick="viewJobInTab('{{ job.id }}', '{{ job.title|escapejs }}', '{{ job.company_name|escapejs }}', '{{ job.company_code|escapejs }}', '{{ job.description|escapejs }}', '{{ job.tech_stacks|escapejs }}', '{{ job.salary_package|escapejs }}', '{{ job.deadline|date:'Y-m-d H:i' }}', '{% if job.id in applied_job_ids %}true{% else %}false{% endif %}', '{{ csrf_token }}')"><i class="fa-solid fa-square-poll-horizontal"></i> View Job details</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="card-grid">
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('academic')">
+                    <span class="stat-title">Daily Assessments</span>
+                    <div class="stat-value">{{ avg_assessment_pct }}%</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Average score across {{ total_attempts }} topics</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('academic')">
+                    <span class="stat-title">Consolidated Mock Score</span>
+                    <div class="stat-value">{{ overall_mock_avg }} / 100</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">From {{ total_mocks }} mock evaluations</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('academic')">
+                    <span class="stat-title">Syllabus Completion</span>
+                    <div class="stat-value">{{ syllabus_progress }}%</div>
+                    <div style="width: 100%; background-color: var(--border-color); height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px;">
+                        <div style="width: {{ syllabus_progress }}%; background-color: var(--success); height: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject-wise Breakdown -->
+            <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;">Consolidated Subject Mock Breakdown</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div style="text-align: center; padding: 1rem; border-right: 1px solid var(--border-color);">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Python</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 5px;">{{ avg_python|default:"-" }}</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; border-right: 1px solid var(--border-color);">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Django framework</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 5px;">{{ avg_django|default:"-" }}</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; border-right: 1px solid var(--border-color);">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Aptitude</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 5px;">{{ avg_aptitude|default:"-" }}</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem; border-right: 1px solid var(--border-color);">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">SQL</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 5px;">{{ avg_sql|default:"-" }}</div>
+                    </div>
+                    <div style="text-align: center; padding: 1rem;">
+                        <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Frontend</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark); margin-top: 5px;">{{ avg_frontend|default:"-" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Academic & Exams -->
+        <div id="academic-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-graduation-cap" style="color: var(--primary-blue);"></i> Syllabus & Assessment Logs
+            </h2>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <!-- Syllabus Completed Topics -->
+                <div class="table-container" style="margin-bottom: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Topic</th>
+                                <th>Status</th>
+                                <th>Completion Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in syllabus_items %}
+                                <tr>
+                                    <td style="font-weight: 600;">{{ item.course_name }}</td>
+                                    <td>{{ item.topic }}</td>
+                                    <td>
+                                        {% if item.is_completed %}
+                                            <span style="color: var(--success); font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Completed</span>
+                                        {% else %}
+                                            <span style="color: var(--text-muted);"><i class="fa-solid fa-circle-notch"></i> Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.completed_date|default:"-" }}</td>
+                                    <td>
+                                        {% if item.is_completed and item.assessment %}
+                                            <a href="{% url 'student_exam' item.assessment.id %}" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Take Test</a>
+                                        {% else %}
+                                            <span style="font-size: 0.8rem; color: var(--text-muted);">No Test Available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No syllabus data defined for your batch yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Feedbacks panel -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1rem;"><i class="fa-solid fa-comment-dots" style="color: var(--success);"></i> Faculty Mock Feedbacks</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; max-height: 350px; overflow-y: auto;">
+                        {% for record in mock_records %}
+                            <div style="background-color: var(--bg-light); border-left: 4px solid var(--primary-blue); padding: 1rem; border-radius: 0 6px 6px 0;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                                    <span>Date: {{ record.date }}</span>
+                                    <span>By: {{ record.trainer.username }}</span>
+                                </div>
+                                <p style="font-size: 0.85rem; font-weight: 500;">{{ record.feedback }}</p>
+                            </div>
+                        {% empty %}
+                            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 1rem;">No mock evaluations recorded yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Placements -->
+        <div id="placement-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-briefcase" style="color: var(--primary-blue);"></i> Placement Postings & Applications
+            </h2>
+
+            <!-- Available Jobs Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                {% for job in available_jobs %}
+                    <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <div>
+                                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark);">{{ job.title }}</h3>
+                                    <span style="font-size: 0.85rem; color: var(--primary-accent); font-weight: 600;">{{ job.company_name }}</span>
+                                </div>
+                                <span style="background-color: #F1F5F9; color: var(--text-dark); font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600;">{{ job.company_code }}</span>
+                            </div>
+
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem;">
+                                {{ job.description|truncatewords:20 }}
+                            </p>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                                <span style="font-size: 0.75rem; background-color: #EFF6FF; color: var(--primary-blue); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 500;">Salary: {{ job.salary_package }}</span>
+                                <span style="font-size: 0.75rem; background-color: #F0FDF4; color: var(--success); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 500;">Deadline: {{ job.deadline|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+                            <button class="btn btn-secondary" style="flex: 1; font-size: 0.8rem;" onclick="viewJobInTab('{{ job.id }}', '{{ job.title|escapejs }}', '{{ job.company_name|escapejs }}', '{{ job.company_code|escapejs }}', '{{ job.description|escapejs }}', '{{ job.tech_stacks|escapejs }}', '{{ job.salary_package|escapejs }}', '{{ job.deadline|date:'Y-m-d H:i' }}', '{% if job.id in applied_job_ids %}true{% else %}false{% endif %}', '{{ csrf_token }}')">View details</button>
+                            
+                            {% if job.id in applied_job_ids %}
+                                <button class="btn btn-secondary" style="flex: 1; font-size: 0.8rem; cursor: not-allowed; color: var(--text-muted);" disabled>Applied</button>
+                            {% else %}
+                                <form action="{% url 'apply_job' job.id %}" method="post" style="flex: 1; display: flex;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 0.8rem;">Apply</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="grid-column: 1/-1; background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 3rem; text-align: center; color: var(--text-muted);">
+                        No jobs currently posted for your batch.
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Application Pipeline Timelines -->
+            <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;"><i class="fa-solid fa-history" style="color: var(--primary-blue);"></i> Active Job Pipeline Statuses</h3>
+                
+                {% for app in applied_jobs %}
+                    <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <div>
+                                <h4 style="font-size: 1rem; font-weight: 700; color: var(--primary-dark);">{{ app.job.title }} at {{ app.job.company_name }}</h4>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">Applied on: {{ app.applied_at }}</span>
+                            </div>
+                            <div>
+                                {% if app.status == 'REJECTED' %}
+                                    <span style="background-color: #FEE2E2; color: #991B1B; font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 30px; font-weight: 600;">Rejected</span>
+                                {% elif app.status == 'SELECTED' %}
+                                    <span style="background-color: #D1FAE5; color: #065F46; font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 30px; font-weight: 600;">Selected</span>
+                                {% else %}
+                                    <span style="background-color: #DBEAFE; color: var(--primary-blue); font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 30px; font-weight: 600;">{{ app.status }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="timeline-flow">
+                            <div class="timeline-step completed">Applied</div>
+                            <div class="timeline-step {% if app.status == 'SHORTLISTED' or app.status == 'ROUND_2' or app.status == 'FINAL_ROUND' or app.status == 'SELECTED' %}completed{% elif app.status == 'REJECTED' %}rejected{% endif %}">Shortlisted</div>
+                            <div class="timeline-step {% if app.status == 'ROUND_2' or app.status == 'FINAL_ROUND' or app.status == 'SELECTED' %}completed{% endif %}">Round 2</div>
+                            <div class="timeline-step {% if app.status == 'FINAL_ROUND' or app.status == 'SELECTED' %}completed{% endif %}">Final Round</div>
+                            <div class="timeline-step {% if app.status == 'SELECTED' %}completed{% endif %}">Selection</div>
+                        </div>
+
+                        {% if app.status == 'REJECTED' and app.rejection_reason %}
+                            <div style="background-color: #FEF2F2; border-left: 4px solid var(--danger); padding: 1rem; border-radius: 0 4px 4px 0; margin-top: 1rem;">
+                                <strong style="font-size: 0.85rem; color: #991B1B;">Reason for rejection:</strong>
+                                <p style="font-size: 0.85rem; color: #7F1D1D; margin-top: 4px;">{{ app.rejection_reason }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 2rem;">You haven't applied for any jobs yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Tab 4: Doubts -->
+        <div id="doubts-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-circle-question" style="color: var(--primary-blue);"></i> Ask Doubts to assigned trainer
+            </h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Doubt Form -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;">Submit a Doubt</h3>
+                    <form action="{% url 'send_doubt' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" for="trainer_select">Select Faculty</label>
+                            <select class="form-select" id="trainer_select" name="trainer_id" required>
+                                {% for trainer in assigned_trainers %}
+                                    <option value="{{ trainer.id }}">{{ trainer.username }}</option>
+                                {% empty %}
+                                    <option value="3">stephen</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="topic_select">Select Completed Syllabus Topic</label>
+                            <select class="form-select" id="topic_select" name="syllabus_item_id" required>
+                                {% for item in syllabus_items %}
+                                    <option value="{{ item.id }}">{{ item.topic }}</option>
+                                {% empty %}
+                                    <option value="">No completed topics available</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="doubt_message">Describe your query</label>
+                            <textarea class="form-textarea" id="doubt_message" name="message" rows="4" required placeholder="Type your doubt here..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Drop Doubt Message</button>
+                    </form>
+                </div>
+
+                <!-- Active doubts history -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;">Doubt Messages History</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto;">
+                        {% for message in student_doubts %}
+                            <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background-color: var(--bg-light);">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                    <span style="font-weight: 600; color: var(--primary-blue);">Topic: {{ message.syllabus_item.topic }}</span>
+                                    <span>{{ message.created_at|date:"M d, Y" }}</span>
+                                </div>
+                                <p style="font-size: 0.85rem; font-weight: 500; color: var(--text-dark);">Q: {{ message.message }}</p>
+                                
+                                {% if message.reply %}
+                                    <div style="margin-top: 0.75rem; border-top: 1px dashed var(--border-color); padding-top: 0.5rem; background-color: #ECFDF5; border-radius: 4px; padding: 0.5rem;">
+                                        <span style="font-size: 0.75rem; color: var(--success); font-weight: 600;"><i class="fa-solid fa-reply"></i> Faculty Stephen Reply:</span>
+                                        <p style="font-size: 0.85rem; color: #065F46; margin-top: 2px;">{{ message.reply }}</p>
+                                    </div>
+                                {% else %}
+                                    <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted); font-style: italic;">
+                                        <i class="fa-solid fa-clock"></i> Awaiting faculty response...
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 2rem;">No doubts dropped yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Profile -->
+        <div id="profile-tab" class="tab-content">
+            <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-user-edit" style="color: var(--primary-blue);"></i> Manage Student Profile
+            </h2>
+
+            <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                <form action="{% url 'student_profile_update' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Academic Major Details</h3>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="deg_view">Degree</label>
+                                <input class="form-input" type="text" id="deg_view" value="{{ profile.get_degree_display }}" disabled style="background-color: var(--bg-light);">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label" for="major_inp">Major</label>
+                                    <input class="form-input" type="text" id="major_inp" name="major" value="{{ profile.major|default:'' }}" placeholder="e.g. Computer Science">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="minor_inp">Minor</label>
+                                    <input class="form-input" type="text" id="minor_inp" name="minor" value="{{ profile.minor|default:'' }}" placeholder="e.g. None">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="extra_knowledge_inp">Extra Knowledge Tech stack</label>
+                                <input class="form-input" type="text" id="extra_knowledge_inp" name="extra_knowledge" value="{{ profile.extra_knowledge|default:'' }}" placeholder="e.g. AI/ML, Cloud, AI">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="resume_file">Upload New Resume (PDF / Doc)</label>
+                                <input class="form-input" type="file" id="resume_file" name="resume">
+                                {% if profile.resume %}
+                                    <div style="margin-top: 8px; font-size: 0.8rem; color: var(--primary-blue);">
+                                        <i class="fa-solid fa-file-pdf"></i> Current Resume: <a href="{{ profile.resume.url }}" target="_blank" style="font-weight: 600; text-decoration: none;">View Resume</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Professional Links & Skills</h3>
+
+                            <div class="form-group">
+                                <label class="form-label" for="github_inp">GitHub Profile Link</label>
+                                <input class="form-input" type="url" id="github_inp" name="github_link" value="{{ profile.github_link|default:'' }}" placeholder="https://github.com/username">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="linkedin_inp">LinkedIn Profile Link</label>
+                                <input class="form-input" type="url" id="linkedin_inp" name="linkedin_link" value="{{ profile.linkedin_link|default:'' }}" placeholder="https://linkedin.com/in/username">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="f_skills">Frontend Tech stacks</label>
+                                <input class="form-input" type="text" id="f_skills" name="frontend_skills" value="{{ profile.frontend_skills|default:'' }}" placeholder="e.g. HTML, CSS, React">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="b_skills">Backend Tech stacks</label>
+                                <input class="form-input" type="text" id="b_skills" name="backend_skills" value="{{ profile.backend_skills|default:'' }}" placeholder="e.g. Django, Spring, SQL">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="o_skills">Other Skills</label>
+                                <input class="form-input" type="text" id="o_skills" name="other_skills" value="{{ profile.other_skills|default:'' }}" placeholder="e.g. Git, Docker">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 2rem; width: 100%;">Save Changes & Update Profile</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Tab 6: Dynamic Job Details View -->
+        <div id="job-details-tab" class="tab-content">
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-secondary" onclick="showTab('placement')" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"><i class="fa-solid fa-arrow-left"></i> Back to Placements</button>
+            </div>
+            
+            <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 2.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <span style="background-color: #EFF6FF; color: var(--primary-blue); font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">ACTIVE PLACEMENT OPPORTUNITY</span>
+                        <h2 id="jd-title" style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-top: 8px;"></h2>
+                        <div style="font-size: 1.1rem; color: var(--primary-accent); font-weight: 700; margin-top: 4px;" id="jd-company"></div>
+                    </div>
+                    <span id="jd-code" style="background-color: #F1F5F9; color: var(--text-dark); font-size: 0.9rem; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 700;"></span>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">Job Description & Specifications</h3>
+                    <div id="jd-desc" style="font-size: 1rem; color: #334155; line-height: 1.7; white-space: pre-line;"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; background-color: var(--bg-light); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Salary Package</div>
+                        <div id="jd-salary" style="font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin-top: 4px;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Required Tech Stack</div>
+                        <div id="jd-tech" style="font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin-top: 4px;"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Application Deadline</div>
+                        <div id="jd-deadline" style="font-size: 1.2rem; font-weight: 700; color: var(--danger); margin-top: 4px;"></div>
+                    </div>
+                </div>
+
+                <div id="jd-action-container" style="max-width: 320px; margin-top: 2rem;">
+                    <!-- Apply form injected dynamically here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Description Modal Box -->
+<div id="job-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 9999;">
+    <div style="background-color: white; max-width: 600px; width: 90%; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+            <div>
+                <h3 id="modal-job-title" style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark);"></h3>
+                <span id="modal-company-name" style="font-size: 0.9rem; color: var(--primary-accent); font-weight: 600;"></span>
+            </div>
+            <span id="modal-company-code" style="background-color: #F1F5F9; color: var(--text-dark); font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 600;"></span>
+        </div>
+
+        <div style="margin-bottom: 1.5rem; max-height: 250px; overflow-y: auto; font-size: 0.9rem; color: var(--text-dark); line-height: 1.6;">
+            <strong>Job Description:</strong>
+            <p id="modal-description" style="margin-top: 5px;"></p>
+        </div>
+
+        <div style="background-color: var(--bg-light); border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
+            <div><strong>Tech Stack:</strong> <span id="modal-tech-stack"></span></div>
+            <div><strong>Salary Package:</strong> <span id="modal-salary"></span></div>
+            <div><strong>Application Deadline:</strong> <span id="modal-deadline"></span></div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <button class="btn btn-secondary" onclick="closeJobModal()">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab Controller (SPA Dashboard)
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        const activeTab = document.getElementById(tabId + '-tab');
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+        
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + tabId) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Auto-sliding Hero Banner JavaScript logic
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide-item');
+    const totalSlides = slides.length;
+    const sliderWrapper = document.getElementById('bannerSlider');
+
+    function autoSlide() {
+        if (totalSlides <= 1) return;
+        currentSlide = (currentSlide + 1) % totalSlides;
+        sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+    
+    if (totalSlides > 1) {
+        setInterval(autoSlide, 5000); // Change banner every 5 seconds
+    }
+
+    function viewJobInTab(id, title, company, code, desc, techs, salary, deadline, applied, csrfToken) {
+        document.getElementById('jd-title').innerText = title;
+        document.getElementById('jd-company').innerText = company;
+        document.getElementById('jd-code').innerText = code;
+        document.getElementById('jd-desc').innerText = desc;
+        document.getElementById('jd-tech').innerText = techs;
+        document.getElementById('jd-salary').innerText = salary;
+        document.getElementById('jd-deadline').innerText = deadline;
+        
+        const actionContainer = document.getElementById('jd-action-container');
+        if (applied === 'true') {
+            actionContainer.innerHTML = `
+                <button class="btn btn-secondary" style="width: 100%; cursor: not-allowed; font-weight: 700;" disabled>
+                    <i class="fa-solid fa-circle-check" style="color: var(--success);"></i> Applied successfully
+                </button>
+            `;
+        } else {
+            const actionUrl = `/student/job/${id}/apply/`;
+            actionContainer.innerHTML = `
+                <form action="${actionUrl}" method="post" style="width: 100%;">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 800;">
+                        <i class="fa-solid fa-paper-plane"></i> Apply for this position
+                    </button>
+                </form>
+            `;
+        }
+        
+        showTab('job-details');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DC Learn{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="animate-fade-in">
+
+    <!-- Loading Preloader with Rotating DC Logo -->
+    <div id="loader-overlay">
+        <div class="dc-logo-loader-container" style="text-align: center;">
+            <div class="dc-logo-loader" style="width: 80px; height: 80px; background-color: #0066fe; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: auto; box-shadow: 0 4px 15px rgba(0, 102, 254, 0.4);">
+                <span style="color: white; font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; font-family: 'Inter', sans-serif;">DC</span>
+            </div>
+            <h2 style="color: white; margin-top: 15px; font-weight: 700; letter-spacing: 0.5px; font-size: 1.1rem; font-family: 'Inter', sans-serif;">Destination Career</h2>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <script>
+        // Page Preloader control
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader-overlay');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        // Trigger spinner on internal page transition clicks
+        document.querySelectorAll('a').forEach(link => {
+            if (link.hostname === window.location.hostname && !link.getAttribute('href').startsWith('#') && !link.target) {
+                link.addEventListener('click', function(e) {
+                    const loader = document.getElementById('loader-overlay');
+                    if (loader) {
+                        loader.style.display = 'flex';
+                        loader.style.opacity = '1';
+                    }
+                });
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

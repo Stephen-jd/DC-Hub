@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}DC Learn - Sign In{% endblock %}
+
+{% block extra_head %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0A1326 0%, #14284F 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .login-split-container {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        max-width: 1200px;
+        width: 95%;
+        margin: auto;
+        gap: 3rem;
+        align-items: center;
+        padding: 2rem 0;
+    }
+
+    /* Left segment styling */
+    .left-promo-panel {
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .promo-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        width: fit-content;
+        color: #3B82F6;
+    }
+
+    .promo-title {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -1px;
+    }
+
+    .promo-description {
+        font-size: 1.05rem;
+        color: #94A3B8;
+        line-height: 1.6;
+    }
+
+    /* Device mockup wrapper */
+    .device-mockup {
+        background-color: #0F172A;
+        border: 10px solid #1E293B;
+        border-radius: 36px;
+        padding: 1.5rem 1rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        max-width: 380px;
+        width: 100%;
+        margin-left: auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .device-screen {
+        background-color: white;
+        border-radius: 24px;
+        padding: 2rem 1.5rem;
+        color: #1E293B;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .device-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: #64748B;
+        font-weight: 600;
+    }
+
+    /* Corporate Logo representation */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .logo-blue-box {
+        background-color: #0066fe;
+        color: white;
+        font-weight: 900;
+        font-size: 1.2rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: -0.5px;
+    }
+
+    .logo-text {
+        color: #0066fe;
+        font-weight: 900;
+        font-size: 1.35rem;
+        padding-left: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    /* Form Fields */
+    .login-label {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #1E293B;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.35rem;
+        display: block;
+    }
+
+    .login-input {
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        width: 100%;
+        font-size: 0.85rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .login-input:focus {
+        border-color: #0066fe;
+    }
+
+    .login-btn {
+        background-color: #1E293B;
+        color: white;
+        font-weight: 800;
+        font-size: 0.85rem;
+        padding: 0.85rem;
+        border-radius: 8px;
+        width: 100%;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .login-btn:hover {
+        background-color: #0F172A;
+    }
+
+    @media (max-width: 768px) {
+        .login-split-container {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 2rem;
+        }
+        .promo-badge {
+            margin: auto;
+        }
+        .promo-title {
+            font-size: 2.2rem;
+        }
+        .device-mockup {
+            margin: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-split-container animate-zoom">
+    
+    <!-- Left panel (Copy match) -->
+    <div class="left-promo-panel">
+        <div class="promo-badge">
+            <i class="fa-solid fa-bolt"></i> Career Academy Accelerator
+        </div>
+        <h1 class="promo-title">
+            Structured Training &<br>Industry Placement<br>Framework
+        </h1>
+        <p class="promo-description">
+            Welcome to the unified Destination Career LMS. Designed exclusively to transition trainee engineers into world-class software developers. Monitor curriculum milestones, track daily subject evaluations, view comprehensive mock interview assessments, and secure direct placement opportunities with top recruiters.
+        </p>
+    </div>
+
+    <!-- Right panel (Device frame) -->
+    <div class="device-mockup">
+        <!-- Physical iPhone buttons in CSS -->
+        <div class="iphone-button-left-top"></div>
+        <div class="iphone-button-left-mid"></div>
+        <div class="iphone-button-left-bot"></div>
+        <div class="iphone-button-right"></div>
+        
+        <div class="device-screen">
+            <!-- iPhone Status Bar -->
+            <div class="device-header" style="padding-bottom: 0.8rem; margin-top: -1.2rem; border-bottom: 1px solid #F1F5F9; margin-bottom: 1.5rem;">
+                <span style="font-weight: 700; color: #0F172A; font-size: 0.85rem;"><i class="fa-solid fa-location-arrow" style="font-size: 0.75rem; margin-right: 2px;"></i> 09:41</span>
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #0F172A;">
+                    <i class="fa-solid fa-signal"></i>
+                    <span style="font-weight: 700; font-size: 0.75rem; letter-spacing: -0.2px;">5G</span>
+                    <i class="fa-solid fa-wifi"></i>
+                    <div style="display: flex; align-items: center; border: 1px solid #0F172A; padding: 1px; border-radius: 4px; height: 11px; width: 22px; position: relative;">
+                        <div style="background-color: #0F172A; height: 7px; width: 15px; border-radius: 2px;"></div>
+                        <div style="background-color: #0F172A; height: 4px; width: 2px; position: absolute; right: -3px; border-top-right-radius: 1px; border-bottom-right-radius: 1px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Destination Career Logo -->
+            <div class="logo-container" style="margin-bottom: 1.5rem;">
+                <div class="logo-blue-box" style="padding: 0.5rem 0.95rem; font-size: 1.35rem; border-radius: 6px;">DC</div>
+                <div class="logo-text" style="font-weight: 900 !important; font-size: 1.5rem !important; color: #0066fe; letter-spacing: -0.5px;">Destination Career</div>
+            </div>
+
+            {% if form.errors %}
+                <div style="background-color: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; padding: 0.75rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                    Invalid username or password.
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label class="login-label" for="id_username" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Email Address / Username</label>
+                    <input class="login-input" type="text" name="username" id="id_username" required autofocus placeholder="Enter username or email" style="padding: 0.85rem; font-size: 0.95rem; border-radius: 10px;">
+                </div>
+
+                <div style="position: relative; margin-bottom: 1.25rem;">
+                    <label class="login-label" for="id_password" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Password</label>
+                    <input class="login-input" type="password" name="password" id="id_password" required placeholder="Enter password" style="padding: 0.85rem; font-size: 0.95rem; border-radius: 10px;">
+                    <span style="position: absolute; right: 12px; top: 38px; color: #64748B; cursor: pointer; font-size: 1rem;" onclick="togglePassword()">
+                        <i class="fa-regular fa-eye" id="toggle-icon"></i>
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.8rem;">
+                    <input type="checkbox" id="show-pass-chk" onclick="togglePasswordCheckbox()" style="cursor: pointer; width: 16px; height: 16px;">
+                    <label for="show-pass-chk" style="font-size: 0.8rem; font-weight: 700; color: #475569; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Show Password</label>
+                </div>
+
+                <button type="submit" class="login-btn" style="padding: 1rem; font-size: 0.95rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">Submit</button>
+            </form>
+
+            <div style="text-align: center; font-size: 0.8rem; color: #64748B; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <i class="fa-solid fa-lock" style="font-size: 0.75rem;"></i> DC Hub - Secure Session
+            </div>
+            
+            <!-- Home indicator bar -->
+            <div class="iphone-home-bar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passInput = document.getElementById('id_password');
+        const icon = document.getElementById('toggle-icon');
+        const checkbox = document.getElementById('show-pass-chk');
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            icon.classList.remove('fa-regular', 'fa-eye');
+            icon.classList.add('fa-solid', 'fa-eye-slash');
+            checkbox.checked = true;
+        } else {
+            passInput.type = 'password';
+            icon.classList.remove('fa-solid', 'fa-eye-slash');
+            icon.classList.add('fa-regular', 'fa-eye');
+            checkbox.checked = false;
+        }
+    }
+
+    function togglePasswordCheckbox() {
+        const passInput = document.getElementById('id_password');
+        const icon = document.getElementById('toggle-icon');
+        const checkbox = document.getElementById('show-pass-chk');
+        if (checkbox.checked) {
+            passInput.type = 'text';
+            icon.classList.remove('fa-regular', 'fa-eye');
+            icon.classList.add('fa-solid', 'fa-eye-slash');
+        } else {
+            passInput.type = 'password';
+            icon.classList.remove('fa-solid', 'fa-eye-slash');
+            icon.classList.add('fa-regular', 'fa-eye');
+        }
+    }
+</script>
+{% endblock %}

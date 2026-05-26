@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}DC Learn - Take Assessment{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Prevent text selection and screenshot helper */
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    #exam-container.blurred {
+        filter: blur(15px);
+        pointer-events: none;
+    }
+    
+    #security-warning-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(15, 23, 42, 0.95);
+        color: white;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Security overlay warning -->
+<div id="security-warning-overlay">
+    <div style="max-width: 500px; padding: 2rem;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+        <h2>Security Protection Triggered</h2>
+        <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.95rem;">
+            Taking screenshots, copy operations, or switching tabs is strictly prohibited. Click the button below to resume the assessment.
+        </p>
+        <button class="btn btn-primary" style="margin-top: 1.5rem;" onclick="resumeExam()">Resume Test</button>
+    </div>
+</div>
+
+<div class="exam-layout screenshot-guard" id="exam-container">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 2rem;">
+        <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-dark);">{{ assessment.title }}</h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Topic: {{ assessment.syllabus_item.topic }}</p>
+        </div>
+        <div style="text-align: right; background-color: var(--primary-dark); color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; font-size: 1rem;">
+            <i class="fa-solid fa-clock"></i> <span id="timer">30:00</span>
+        </div>
+    </div>
+
+    <!-- Doubt messaging during exam -->
+    <div style="background-color: #F8FAFC; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; margin-bottom: 2rem;">
+        <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;"><i class="fa-solid fa-comment-medical" style="color: var(--primary-blue);"></i> Have a doubt regarding this exam?</h4>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="doubt-txt" class="form-input" style="flex: 1; padding: 0.4rem 0.8rem;" placeholder="Type your doubt regarding the question...">
+            <button class="btn btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="dropExamDoubt()">Send Trainer</button>
+        </div>
+        <div id="doubt-status" style="font-size: 0.75rem; color: var(--success); margin-top: 5px; display: none;">Doubt message sent to trainer Stephen!</div>
+    </div>
+
+    <!-- Exam Form -->
+    <form id="assessment-form" method="post" action="{% url 'student_exam' assessment.id %}">
+        {% csrf_token %}
+        
+        <!-- MCQs -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Section 1: 20 Multiple Choice Questions (20 Marks)</h3>
+        
+        {% for q in questions %}
+            <div style="margin-bottom: 1.75rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px;">
+                <p style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem;">Q{{ forloop.counter }}. {{ q.question }}</p>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    {% for opt in q.options %}
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-dark); cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='transparent'">
+                            <input type="radio" name="q_{{ q.id }}" value="{{ opt }}" required>
+                            {{ opt }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- Coding Question -->
+        {% if coding_question %}
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-top: 2.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Section 2: Coding Question (10 Marks)</h3>
+            <div style="margin-bottom: 2rem; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; background-color: #FAFAFA;">
+                <p style="font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.75rem;">
+                    <strong>Problem:</strong> {{ coding_question.question }}
+                </p>
+                <div class="form-group">
+                    <label class="form-label" for="code-editor">Coding Answer Editor</label>
+                    <textarea class="form-textarea" id="code-editor" name="coding_answer" rows="8" placeholder="Type your code solution here..." style="font-family: monospace; font-size: 0.85rem; background-color: #0F172A; color: #38BDF8; caret-color: white;"></textarea>
+                </div>
+            </div>
+        {% endif %}
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+            <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Cancel Test</a>
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">Submit Assessment</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 1. Right Click and Copy Protection
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('cut', e => e.preventDefault());
+    
+    // 2. Tab Switch/Blur Detection
+    window.addEventListener('blur', function() {
+        document.getElementById('exam-container').classList.add('blurred');
+        document.getElementById('security-warning-overlay').style.display = 'flex';
+    });
+    
+    function resumeExam() {
+        document.getElementById('exam-container').classList.remove('blurred');
+        document.getElementById('security-warning-overlay').style.display = 'none';
+    }
+
+    // 3. Countdown Timer (30 Mins)
+    let timeLimit = 30 * 60; // 30 mins in seconds
+    const timerText = document.getElementById('timer');
+    
+    const interval = setInterval(function() {
+        let minutes = Math.floor(timeLimit / 60);
+        let seconds = timeLimit % 60;
+        
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        
+        timerText.innerText = minutes + ':' + seconds;
+        
+        if (timeLimit <= 0) {
+            clearInterval(interval);
+            alert("Time is up! Your assessment will be submitted automatically.");
+            document.getElementById('assessment-form').submit();
+        }
+        timeLimit--;
+    }, 1000);
+
+    // 4. Drop Doubt Message during exam
+    function dropExamDoubt() {
+        const doubtText = document.getElementById('doubt-txt').value.trim();
+        if (doubtText === "") return;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        formData.append('trainer_id', '{{ trainer.id }}');
+        formData.append('syllabus_item_id', '{{ assessment.syllabus_item.id }}');
+        formData.append('message', "EXAM QUESTION DOUBT: " + doubtText);
+        
+        fetch('{% url "send_doubt" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        }).then(response => {
+            document.getElementById('doubt-txt').value = "";
+            const statusDiv = document.getElementById('doubt-status');
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        });
+    }
+</script>
+{% endblock %}

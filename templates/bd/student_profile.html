@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}DC Learn - Student Dashboard Details{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-brand" style="display: flex; align-items: center; text-decoration: none;">
+            <div style="background-color: #0066fe; color: white; font-weight: 900; font-size: 0.95rem; padding: 0.25rem 0.5rem; border-radius: 4px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;">DC</div>
+            <div style="color: white; font-weight: 700; font-size: 0.85rem; padding-left: 0.5rem; line-height: 1.2;">Destination Career</div>
+        </a>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'bd_dashboard' %}" class="sidebar-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--primary-dark);">Student Profile: {{ student.username }}</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Batch: <span style="font-weight: 600; color: var(--primary-blue);">{{ profile.batch.name }}</span> | Status inspection</p>
+            </div>
+            <div style="text-align: right;">
+                <a href="{% url 'bd_dashboard' %}" class="btn btn-secondary"><i class="fa-solid fa-chevron-left"></i> Return</a>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div style="margin-bottom: 1.5rem;">
+                {% for message in messages %}
+                    <div style="background-color: #D1FAE5; color: #065F46; padding: 0.75rem 1.25rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 500;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Two column details -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+            <div>
+                <!-- Academic and Profile Card -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Candidate Credentials</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.9rem;">
+                        <div>
+                            <p style="margin-bottom: 8px;"><strong>Full Name:</strong> {{ student.first_name }} {{ student.last_name }}</p>
+                            <p style="margin-bottom: 8px;"><strong>Email Address:</strong> {{ student.email }}</p>
+                            <p style="margin-bottom: 8px;"><strong>Phone Contact:</strong> {{ profile.phone|default:"-" }}</p>
+                            <p style="margin-bottom: 8px;"><strong>Degree Major:</strong> {{ profile.get_degree_display }} ({{ profile.major|default:"-" }})</p>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: 8px;">
+                                <strong>GitHub Profile:</strong> 
+                                {% if profile.github_link %}
+                                    <a href="{{ profile.github_link }}" target="_blank">{{ profile.github_link }}</a>
+                                {% else %}-{% endif %}
+                            </p>
+                            <p style="margin-bottom: 8px;">
+                                <strong>LinkedIn Profile:</strong> 
+                                {% if profile.linkedin_link %}
+                                    <a href="{{ profile.linkedin_link }}" target="_blank">{{ profile.linkedin_link }}</a>
+                                {% else %}-{% endif %}
+                            </p>
+                            <p style="margin-bottom: 8px;">
+                                <strong>Consolidated Assessment Avg:</strong> <span style="color: var(--primary-accent); font-weight: 700;">{{ avg_assess }}%</span>
+                            </p>
+                            <p style="margin-bottom: 8px;">
+                                <strong>Consolidated Mock Avg:</strong> <span style="color: var(--success); font-weight: 700;">{{ avg_mock }}/100</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Skills summary -->
+                    <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; font-size: 0.9rem;">
+                        <p style="margin-bottom: 8px;"><strong>Frontend Technologies:</strong> {{ profile.frontend_skills|default:"-" }}</p>
+                        <p style="margin-bottom: 8px;"><strong>Backend Technologies:</strong> {{ profile.backend_skills|default:"-" }}</p>
+                        <p style="margin-bottom: 8px;"><strong>Extra Core Skills:</strong> {{ profile.other_skills|default:"-" }}</p>
+                        <p style="margin-bottom: 8px;"><strong>Extra Special Knowledge:</strong> <span style="background-color: #DBEAFE; color: var(--primary-blue); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">{{ profile.extra_knowledge|default:"None" }}</span></p>
+                    </div>
+
+                    {% if profile.resume %}
+                        <div style="margin-top: 1.5rem;">
+                            <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Access Candidate Resume File</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Academic Test History -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Daily Assessment Attempt Scores</h3>
+                    <div class="table-container" style="margin-bottom: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Assessment Topic</th>
+                                    <th>Score Awarded</th>
+                                    <th>Attempted Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for att in attempts %}
+                                    <tr>
+                                        <td style="font-weight: 600;">{{ att.assessment.syllabus_item.topic }}</td>
+                                        <td>{{ att.score }}/20 ({{ att.score|add:att.score }}%)</td>
+                                        <td>{{ att.attempted_at }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">No assessments completed yet.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side column messaging and instruction sharing -->
+            <div>
+                <!-- Message Portal -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-paper-plane" style="color: var(--primary-blue);"></i> Send Prep Instructions</h3>
+                    
+                    <form action="{% url 'bd_message_student' student.id %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" for="msg_txt">Instruction message / Prep guidelines</label>
+                            <textarea class="form-textarea" id="msg_txt" name="message" rows="4" required placeholder="Type preparation instructions for company interviews..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="prep_file">Attach preparation material (PDF, doc)</label>
+                            <input class="form-input" type="file" id="prep_file" name="file_attachment">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Share Instructions & File</button>
+                    </form>
+                </div>
+
+                <!-- Chat history -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;">Instruction Log</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; max-height: 300px; overflow-y: auto;">
+                        {% for log in chat_history %}
+                            <div style="border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem; background-color: var(--bg-light);">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">Sent: {{ log.created_at }}</div>
+                                <p style="font-size: 0.85rem; font-weight: 500;">{{ log.message }}</p>
+                                {% if log.file_attachment %}
+                                    <div style="margin-top: 8px; font-size: 0.8rem;">
+                                        <a href="{{ log.file_attachment.url }}" target="_blank" style="color: var(--primary-blue); font-weight: 600; text-decoration: none;"><i class="fa-solid fa-file-arrow-down"></i> Download prep material</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 1rem;">No guidelines shared yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

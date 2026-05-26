@@ -1,0 +1,13 @@
+*.sqlite3
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+db.sqlite3
+/media/
+/static_root/
+.gemini/
+.vscode/
+.idea/
+*.log

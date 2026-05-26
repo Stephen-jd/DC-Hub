@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+
+{% block title %}DC Learn - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-brand" style="display: flex; align-items: center; text-decoration: none;">
+            <div style="background-color: #0066fe; color: white; font-weight: 900; font-size: 1.15rem; padding: 0.35rem 0.65rem; border-radius: 6px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;">DC</div>
+            <div style="color: white; font-weight: 900 !important; font-size: 1.25rem !important; padding-left: 0.5rem; line-height: 1.2; letter-spacing: -0.5px; text-transform: uppercase;">Destination Career</div>
+        </a>
+        <ul class="sidebar-menu">
+            <li><a href="#stats" class="sidebar-link active" onclick="showTab('stats')"><i class="fa-solid fa-gauge-high"></i> Dashboard Home</a></li>
+            <li><a href="#batches-control" class="sidebar-link" onclick="showTab('batches-control')"><i class="fa-solid fa-layer-group"></i> Batches Control</a></li>
+            <li><a href="#trainer-assign" class="sidebar-link" onclick="showTab('trainer-assign')"><i class="fa-solid fa-chalkboard-user"></i> Trainer Assignments</a></li>
+            <li><a href="#student-database" class="sidebar-link" onclick="showTab('student-database')"><i class="fa-solid fa-users"></i> Students Database</a></li>
+            <li style="margin-top: auto;">
+                <form action="{% url 'logout' %}" method="post" id="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-link" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+            <div>
+                <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--primary-dark);">Administrator Management Panel</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Overview: Complete system statistics & enrollment controls</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="background-color: #FEE2E2; color: #991B1B; padding: 0.5rem 1rem; border-radius: 30px; font-weight: 600; font-size: 0.85rem;">System Admin</span>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div style="margin-bottom: 1.5rem;">
+                {% for message in messages %}
+                    <div style="background-color: {% if message.tags == 'error' %}#FEE2E2{% else %}#DBEAFE{% endif %}; color: {% if message.tags == 'error' %}#991B1B{% else %}#1E40AF{% endif %}; padding: 0.75rem 1.25rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 500;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Tab 1: Dashboard Home / Stats -->
+        <div id="stats-tab" class="tab-content active">
+            <!-- Auto-sliding Info Banner -->
+            <div class="slider-container">
+                <div class="slider-wrapper" id="adminSlider">
+                    <div class="slide-item" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80');">
+                        <span style="background-color: var(--primary-blue); font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.50rem; border-radius: 4px; width: fit-content; text-transform: uppercase;">ADMIN CONTROL</span>
+                        <h2>DC Master System Management</h2>
+                        <p>Track global student sign-ups, set up learning batch categories, and view mock date-logs across departments.</p>
+                    </div>
+                    <div class="slide-item" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80');">
+                        <span style="background-color: #EF4444; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.50rem; border-radius: 4px; width: fit-content; text-transform: uppercase;">REGISTRY INTEGRATION</span>
+                        <h2>Bulk Student Data Imports</h2>
+                        <p>Upload student tables in CSV format to automatically generate profiles, batches, and viewable login credentials.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall metrics cards -->
+            <section id="stats" class="card-grid" style="margin-bottom: 3rem;">
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('student-database')">
+                    <span class="stat-title">Total Active Students</span>
+                    <div class="stat-value">{{ total_students }}</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Registered in DC Master database</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('batches-control')">
+                    <span class="stat-title">Created Batches</span>
+                    <div class="stat-value">{{ total_batches }}</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">PFS008 and passout pipelines</p>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="showTab('trainer-assign')">
+                    <span class="stat-title">Active Trainers</span>
+                    <div class="stat-value">{{ total_trainers }}</div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Instructors delivering technology tracks</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab 2: Batches Control -->
+        <div id="batches-control-tab" class="tab-content">
+            <section id="batches-control" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-layer-group" style="color: var(--primary-blue);"></i> Batches Management</h3>
+                
+                <form action="{% url 'manage_batches' %}" method="post" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+                    <input type="text" name="name" class="form-input" placeholder="e.g. PFS009" required style="flex: 2;">
+                    <input type="number" name="year" class="form-input" placeholder="Year" required style="flex: 1;" value="2026">
+                    <button type="submit" class="btn btn-primary">Create Batch</button>
+                </form>
+
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.75rem;">Batch Student Enrollments Diagram</h4>
+                <div class="table-container" style="margin-bottom: 0;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Batch</th>
+                                <th>Passout Year</th>
+                                <th>Enrolled Students</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in batch_counts %}
+                                <tr>
+                                    <td style="font-weight: 600;">{{ b.name }}</td>
+                                    <td>{{ b.year }}</td>
+                                    <td>
+                                        <span style="background-color: #DBEAFE; color: var(--primary-blue); font-weight: 700; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px;">
+                                            {{ b.student_count }} Students
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form action="{% url 'manage_batches' %}" method="post" style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="batch_id" value="{{ b.id }}">
+                                            <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; background-color: var(--danger);"><i class="fa-solid fa-trash"></i> Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No batches defined.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab 3: Trainer Assignments -->
+        <div id="trainer-assign-tab" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <section id="trainer-assign" style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-chalkboard-user" style="color: var(--primary-blue);"></i> Assign Technologies to Trainer</h3>
+                    
+                    <form action="{% url 'assign_trainer_batch' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" for="tr_select">Trainer / Faculty</label>
+                            <select class="form-select" id="tr_select" name="trainer" required>
+                                {% for tr in trainers %}
+                                    <option value="{{ tr.id }}">{{ tr.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bt_select">Target Batch</label>
+                            <select class="form-select" id="bt_select" name="batch" required>
+                                {% for bt in batches %}
+                                    <option value="{{ bt.id }}">{{ bt.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="tech_inp">Technologies covered (JFS, PFS, etc.)</label>
+                            <input class="form-input" type="text" id="tech_inp" name="technologies" required placeholder="e.g. Java Fullstack">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="start_d">Track Start Date</label>
+                            <input class="form-input" type="date" id="start_d" name="started_at" required value="2026-05-26">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Assign Course & Batch</button>
+                    </form>
+                </section>
+
+                <section style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.25rem;"><i class="fa-solid fa-file-excel" style="color: var(--success);"></i> Bulk Import Students via CSV File</h3>
+                    <form action="{% url 'import_students' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input class="form-input" type="text" name="batch_name" required placeholder="Create Batch Name (e.g. PFS009)">
+                            <input class="form-input" type="number" name="batch_year" required placeholder="Year" value="2026">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="excel_f">Upload CSV student details list</label>
+                            <input class="form-input" type="file" id="excel_f" name="csv_file" required accept=".csv">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Execute CSV Bulk Upload</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+
+        <!-- Tab 4: Students Database -->
+        <div id="student-database-tab" class="tab-content">
+            <section id="student-database" style="margin-bottom: 4rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--primary-dark);">
+                        <i class="fa-solid fa-users" style="color: var(--primary-blue);"></i> Registered Student Database
+                    </h2>
+                    <button class="btn btn-primary" onclick="openAddStudentModal()"><i class="fa-solid fa-user-plus"></i> Add Single Student</button>
+                </div>
+
+                <!-- Sorting selection bar -->
+                <div style="background-color: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-dark);">
+                        Sort Database columns:
+                        <a href="?sort=username" class="btn {% if sort_by == 'username' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; margin-left: 0.5rem;">Username</a>
+                        <a href="?sort=name" class="btn {% if sort_by == 'name' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; margin-left: 0.25rem;">Student Name</a>
+                        <a href="?sort=email" class="btn {% if sort_by == 'email' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; margin-left: 0.25rem;">Email</a>
+                        <a href="?sort=mobile" class="btn {% if sort_by == 'mobile' %}btn-primary{% else %}btn-secondary{% endif %}" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; margin-left: 0.25rem;">Mobile</a>
+                    </div>
+
+                    <div>
+                        <form method="get" style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-dark);">Filter:</span>
+                            <select name="batch_id" class="form-select" onchange="this.form.submit()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                <option value="">All Batches</option>
+                                {% for bt in batches %}
+                                    <option value="{{ bt.id }}" {% if selected_batch_id == bt.id|stringformat:"s" %}selected{% endif %}>{{ bt.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Database Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email Address</th>
+                                <th>Mobile Phone</th>
+                                <th>Enrolled Batch</th>
+                                <th>Password (Viewable)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stud in students %}
+                                <tr>
+                                    <td style="font-weight: 600;">{{ stud.username }}</td>
+                                    <td>{{ stud.first_name }} {{ stud.last_name }}</td>
+                                    <td>{{ stud.email }}</td>
+                                    <td>{{ stud.profile.phone|default:"-" }}</td>
+                                    <td>{{ stud.profile.batch.name|default:"Unassigned" }}</td>
+                                    <td style="font-family: monospace; font-weight: bold; color: var(--primary-accent);">
+                                        {{ stud.raw_password_text|default:"-" }}
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 0.25rem;">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.7rem;" onclick="openEditBatchModal('{{ stud.id }}', '{{ stud.username }}', '{{ stud.profile.batch.id }}')"><i class="fa-solid fa-edit"></i> Batch</button>
+                                            
+                                            <form action="{% url 'manage_students' %}" method="post" onsubmit="return confirm('Are you sure you want to delete this student profile permanently?')">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="student_id" value="{{ stud.id }}">
+                                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background-color: var(--danger);"><i class="fa-solid fa-user-xmark"></i> Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No student profiles registered in database yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Add Single Student Modal Box -->
+<div id="add-student-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100/vh; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 9999;">
+    <div style="background-color: white; max-width: 450px; width: 95%; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Add New Student Account</h3>
+        <form action="{% url 'manage_students' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add">
+
+            <div class="form-group">
+                <label class="form-label" for="s_username">Username</label>
+                <input class="form-input" type="text" id="s_username" name="username" required placeholder="e.g. student_009">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="s_fname">First Name</label>
+                    <input class="form-input" type="text" id="s_fname" name="first_name" required placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="s_lname">Last Name</label>
+                    <input class="form-input" type="text" id="s_lname" name="last_name" required placeholder="Surname">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="s_email">Email Address</label>
+                <input class="form-input" type="email" id="s_email" name="email" required placeholder="e.g. example@dclearn.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="s_phone">Mobile Number</label>
+                <input class="form-input" type="text" id="s_phone" name="phone" required placeholder="Contact number">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="s_batch">Assign Batch</label>
+                <select class="form-select" id="s_batch" name="batch" required>
+                    {% for bt in batches %}
+                        <option value="{{ bt.id }}">{{ bt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeAddStudentModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Student Batch Modal Box -->
+<div id="edit-batch-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 9999;">
+    <div style="background-color: white; max-width: 400px; width: 95%; border-radius: 12px; padding: 2rem; border: 1px solid var(--border-color);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 1.5rem;">Modify Student Batch Allocation</h3>
+        <form action="{% url 'manage_students' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="edit">
+            <input type="hidden" name="student_id" id="edit-student-id">
+
+            <p style="margin-bottom: 1.25rem; font-weight: 600;">Student: <span id="edit-student-username" style="color: var(--primary-blue);"></span></p>
+
+            <div class="form-group">
+                <label class="form-label" for="edit-batch-select">Select New Target Batch</label>
+                <select class="form-select" id="edit-batch-select" name="batch" required>
+                    <option value="">None (Unassigned)</option>
+                    {% for bt in batches %}
+                        <option value="{{ bt.id }}">{{ bt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="closeEditBatchModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Assign Batch</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // SPA Tab toggle mechanism
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        const activeTab = document.getElementById(tabId + '-tab');
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+        
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + tabId) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Auto-sliding banner
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('#adminSlider .slide-item');
+    const totalSlides = slides.length;
+    const sliderWrapper = document.getElementById('adminSlider');
+
+    function autoSlide() {
+        if (totalSlides <= 1) return;
+        currentSlide = (currentSlide + 1) % totalSlides;
+        sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+    
+    if (totalSlides > 1) {
+        setInterval(autoSlide, 5000);
+    }
+
+    function openAddStudentModal() {
+        document.getElementById('add-student-modal').style.display = 'flex';
+    }
+
+    function closeAddStudentModal() {
+        document.getElementById('add-student-modal').style.display = 'none';
+    }
+
+    function openEditBatchModal(id, username, batchId) {
+        document.getElementById('edit-student-id').value = id;
+        document.getElementById('edit-student-username').innerText = username;
+        
+        const select = document.getElementById('edit-batch-select');
+        select.value = batchId || "";
+        
+        document.getElementById('edit-batch-modal').style.display = 'flex';
+    }
+
+    function closeEditBatchModal() {
+        document.getElementById('edit-batch-modal').style.display = 'none';
+    }
+</script>
+{% endblock %}
