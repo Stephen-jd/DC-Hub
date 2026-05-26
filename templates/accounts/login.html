@@ -4,6 +4,7 @@
 {% block title %}Destination Career — Start Your Journey{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/devicon.min.css">
 <style>
     /* ── Reset for landing page ─────────────────────────────── */
     body {
@@ -340,68 +341,114 @@
         50% { box-shadow: 0 0 0 8px rgba(0,102,254,0); }
     }
 
-    /* ── Tech Skills Section ────────────────────────────────── */
-    .section-skills {
-        background: #F8FAFF;
+    /* ── Compilers Section ──────────────────────────────────── */
+    .section-compilers {
         padding: 4rem 5%;
-    }
-    .section-skills-inner {
         max-width: 1300px;
         margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 4rem;
+        text-align: center;
     }
-    .skills-content {
-        flex: 1.2;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-    .skills-grid {
+    .compilers-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.75rem;
-        max-width: 340px;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1rem;
+        max-width: 750px;
+        margin: 2rem auto 0;
     }
-    .skill-card {
-        background: #fff;
+    .compiler-card {
+        background: #F8FAFC;
         border: 1.5px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 0.85rem;
+        border-radius: 14px;
+        padding: 1.2rem 0.8rem;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
-        transition: all 0.2s;
+        gap: 0.5rem;
+        transition: all 0.25s;
         cursor: default;
     }
-    .skill-card:hover {
+    .compiler-card:hover {
         border-color: #0066fe;
-        box-shadow: 0 4px 12px rgba(0,102,254,0.12);
+        box-shadow: 0 6px 18px rgba(0,102,254,0.12);
+        transform: translateY(-4px);
+        background: #fff;
+    }
+    .compiler-card i {
+        font-size: 2.2rem;
+    }
+    .compiler-card .cname {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #475569;
+    }
+
+    /* ── Tech Stacks Section ──────────────────────────────────── */
+    .section-stacks {
+        background: #F8FAFF;
+        padding: 4rem 5%;
+    }
+    .stacks-inner {
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+    .stack-block {
+        margin-bottom: 3rem;
+    }
+    .stack-block:last-child { margin-bottom: 0; }
+    .stack-heading {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #0F172A;
+        margin: 0 0 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        letter-spacing: -0.3px;
+    }
+    .stack-heading .sh-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .stack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.8rem;
+    }
+    .stack-card {
+        background: #fff;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1rem 0.6rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.45rem;
+        transition: all 0.25s;
+        cursor: default;
+    }
+    .stack-card:hover {
+        border-color: #0066fe;
+        box-shadow: 0 4px 14px rgba(0,102,254,0.1);
         transform: translateY(-3px);
     }
-    .skill-card .skill-icon {
-        font-size: 1.5rem;
+    .stack-card i {
+        font-size: 2rem;
     }
-    .skill-card .skill-name {
-        font-size: 0.65rem;
+    .stack-card .sname {
+        font-size: 0.7rem;
         font-weight: 700;
         color: #475569;
         text-align: center;
-    }
-    .skills-right {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
     }
     .bottom-tags {
         display: flex;
         flex-wrap: wrap;
         gap: 0.6rem;
-        margin-top: 0.5rem;
+        margin-top: 1.5rem;
+        justify-content: center;
     }
 
     /* ── Login Modal ────────────────────────────────────────── */
@@ -574,18 +621,19 @@
 
     /* ── Responsive ─────────────────────────────────────────── */
     @media (max-width: 900px) {
-        .lp-hero, .section-packs, .section-skills-inner { flex-direction: column; gap: 2rem; }
+        .lp-hero, .section-packs { flex-direction: column; gap: 2rem; }
         .hero-title { font-size: 2rem; }
         .hero-right { order: -1; }
         .packs-img-wrap { order: -1; }
-        .skills-grid { grid-template-columns: repeat(4, 1fr); }
+        .compilers-grid { grid-template-columns: repeat(4, 1fr); }
         .lp-nav-links { display: none; }
         .stats-row { gap: 2rem; }
     }
     @media (max-width: 480px) {
         .hero-title { font-size: 1.6rem; }
         .section-title { font-size: 1.5rem; }
-        .skills-grid { grid-template-columns: repeat(3, 1fr); }
+        .compilers-grid { grid-template-columns: repeat(3, 1fr); }
+        .stack-grid { grid-template-columns: repeat(3, 1fr); }
         .lp-modal { padding: 1.5rem; margin: 1rem; }
     }
 </style>
@@ -612,7 +660,7 @@
 <section class="lp-hero">
     <div class="hero-left">
         <div class="hero-badge">
-            <i class="fa-solid fa-graduation-cap"></i> Python Full Stack — Batch PFS008
+            <i class="fa-solid fa-graduation-cap"></i> All Tech Stacks Supported
         </div>
         <h1 class="hero-title">
             Start your preparation<br>with <span class="typed-prefix">Destination Career:</span><br>
@@ -645,20 +693,20 @@
 <!-- ── Stats Row ─────────────────────────────────────────── -->
 <div class="stats-row">
     <div class="stat-item">
-        <div class="num">10+</div>
-        <div class="label">Topics Covered</div>
+        <div class="num">12+</div>
+        <div class="label">Compilers</div>
     </div>
     <div class="stat-item">
-        <div class="num">5</div>
-        <div class="label">Expert Trainers</div>
+        <div class="num">3</div>
+        <div class="label">Full Stack Tracks</div>
+    </div>
+    <div class="stat-item">
+        <div class="num">30+</div>
+        <div class="label">Technologies</div>
     </div>
     <div class="stat-item">
         <div class="num">100%</div>
-        <div class="label">Syllabus Tracked</div>
-    </div>
-    <div class="stat-item">
-        <div class="num">PFS008</div>
-        <div class="label">Active Batch</div>
+        <div class="label">Placement Support</div>
     </div>
 </div>
 
@@ -684,71 +732,99 @@
     </div>
 </section>
 
-<!-- ── Tech Skills Section ───────────────────────────────── -->
-<section class="section-skills">
-    <div class="section-skills-inner">
-        <div class="skills-content">
+<!-- ── Compilers Section ──────────────────────────────────── -->
+<section class="section-compilers">
+    <div class="section-label">Built-in IDE</div>
+    <h2 class="section-title" style="text-align:center;">We are equipped with 12 Compilers</h2>
+    <div class="compilers-grid">
+        <div class="compiler-card"><i class="devicon-c-plain colored"></i><span class="cname">C</span></div>
+        <div class="compiler-card"><i class="devicon-cplusplus-plain colored"></i><span class="cname">C++</span></div>
+        <div class="compiler-card"><i class="devicon-java-plain colored"></i><span class="cname">Java</span></div>
+        <div class="compiler-card"><i class="devicon-python-plain colored"></i><span class="cname">Python</span></div>
+        <div class="compiler-card"><i class="devicon-javascript-plain colored"></i><span class="cname">JavaScript</span></div>
+        <div class="compiler-card"><i class="devicon-php-plain colored"></i><span class="cname">PHP</span></div>
+        <div class="compiler-card"><i class="devicon-typescript-plain colored"></i><span class="cname">TypeScript</span></div>
+        <div class="compiler-card"><i class="devicon-csharp-plain colored"></i><span class="cname">C#</span></div>
+        <div class="compiler-card"><i class="devicon-go-original-wordmark colored"></i><span class="cname">Go</span></div>
+        <div class="compiler-card"><i class="devicon-r-original colored"></i><span class="cname">R</span></div>
+        <div class="compiler-card"><i class="devicon-scala-plain colored"></i><span class="cname">Scala</span></div>
+        <div class="compiler-card"><i class="devicon-dot-net-plain colored"></i><span class="cname">.NET</span></div>
+    </div>
+</section>
+
+<!-- ── Tech Stacks Section ───────────────────────────────── -->
+<section class="section-stacks">
+    <div class="stacks-inner">
+        <div style="text-align:center; margin-bottom:2.5rem;">
             <div class="section-label">Curriculum</div>
-            <h2 class="section-title">Now it's easy to<br>Upskill yourself</h2>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <span class="skill-icon">🐍</span>
-                    <span class="skill-name">Python</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">🌐</span>
-                    <span class="skill-name">Django</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">🧠</span>
-                    <span class="skill-name">Aptitude</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">🗄️</span>
-                    <span class="skill-name">SQL</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">🎨</span>
-                    <span class="skill-name">HTML/CSS</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">⚡</span>
-                    <span class="skill-name">JavaScript</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">⚛️</span>
-                    <span class="skill-name">React</span>
-                </div>
-                <div class="skill-card">
-                    <span class="skill-icon">🔧</span>
-                    <span class="skill-name">Git</span>
-                </div>
-            </div>
-            <button class="waiting-btn" style="margin-top:0.5rem;" onclick="openLoginModal()">
-                <i class="fa-solid fa-graduation-cap"></i> Explore PFS008 Courses
-            </button>
+            <h2 class="section-title" style="text-align:center;">Now it's easy to Upskill yourself</h2>
         </div>
-        <div class="skills-right">
-            <div class="section-label">Why choose us</div>
-            <h2 class="section-title">Structured training<br>to placement</h2>
-            <p style="color:#64748B; font-size:0.95rem; line-height:1.7; margin:0;">
-                The DC Hub LMS is exclusively built to transition engineers into industry-ready professionals. 
-                Each module is crafted with real-world assessments, mock interview simulations, and direct 
-                recruiter connections.
-            </p>
-            <div class="bottom-tags">
-                <span class="feature-tag">📚 Detailed Learning Path</span>
-                <span class="feature-tag">🎯 Focused Approach</span>
-                <span class="feature-tag">🤝 Expert Trainers</span>
-                <span class="feature-tag">🏆 Best Placement Rates</span>
+
+        <!-- Python Full Stack -->
+        <div class="stack-block">
+            <h3 class="stack-heading"><span class="sh-dot" style="background:#3776AB;"></span> Python Full Stack Technologies</h3>
+            <div class="stack-grid">
+                <div class="stack-card"><i class="devicon-python-plain colored"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-django-plain colored"></i><span class="sname">Django</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain colored"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain colored"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain colored"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original colored"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-sqlite-plain colored"></i><span class="sname">SQLite</span></div>
+                <div class="stack-card"><i class="devicon-git-plain colored"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-github-original colored"></i><span class="sname">GitHub</span></div>
             </div>
+        </div>
+
+        <!-- Java Full Stack -->
+        <div class="stack-block">
+            <h3 class="stack-heading"><span class="sh-dot" style="background:#f89820;"></span> Java Full Stack Technologies</h3>
+            <div class="stack-grid">
+                <div class="stack-card"><i class="devicon-java-plain colored"></i><span class="sname">Java</span></div>
+                <div class="stack-card"><i class="devicon-spring-plain colored"></i><span class="sname">Spring Boot</span></div>
+                <div class="stack-card"><i class="devicon-hibernate-plain colored"></i><span class="sname">Hibernate</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain colored"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain colored"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain colored"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original colored"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-postgresql-plain colored"></i><span class="sname">PostgreSQL</span></div>
+                <div class="stack-card"><i class="devicon-docker-plain colored"></i><span class="sname">Docker</span></div>
+                <div class="stack-card"><i class="devicon-git-plain colored"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-amazonwebservices-plain-wordmark colored"></i><span class="sname">AWS</span></div>
+            </div>
+        </div>
+
+        <!-- Data Analytics -->
+        <div class="stack-block">
+            <h3 class="stack-heading"><span class="sh-dot" style="background:#4CAF50;"></span> Data Analytics Technologies</h3>
+            <div class="stack-grid">
+                <div class="stack-card"><i class="devicon-python-plain colored"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-r-original colored"></i><span class="sname">R</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">SQL</span></div>
+                <div class="stack-card"><i class="devicon-numpy-original colored"></i><span class="sname">NumPy</span></div>
+                <div class="stack-card"><i class="devicon-pandas-original colored"></i><span class="sname">Pandas</span></div>
+                <div class="stack-card"><i class="devicon-matplotlib-plain colored"></i><span class="sname">Matplotlib</span></div>
+                <div class="stack-card"><i class="devicon-tensorflow-original colored"></i><span class="sname">TensorFlow</span></div>
+                <div class="stack-card"><i class="devicon-jupyter-plain colored"></i><span class="sname">Jupyter</span></div>
+                <div class="stack-card"><i class="devicon-kaggle-original colored"></i><span class="sname">Kaggle</span></div>
+                <div class="stack-card"><i class="devicon-apachespark-original colored"></i><span class="sname">Spark</span></div>
+            </div>
+        </div>
+
+        <div class="bottom-tags" style="justify-content:center;">
+            <span class="feature-tag">📚 Detailed Learning Path</span>
+            <span class="feature-tag">🎯 Focused Approach</span>
+            <span class="feature-tag">🤝 Expert Content Partners</span>
+            <span class="feature-tag">🏆 Best Quality Courses</span>
         </div>
     </div>
 </section>
 
 <!-- ── Footer ─────────────────────────────────────────────── -->
 <footer class="lp-footer">
-    © 2026 <span>Destination Career</span> · All rights reserved · Built for PFS008 Batch
+    © 2026 <span>Destination Career</span> · All rights reserved · Python Full Stack · Java Full Stack · Data Analytics
 </footer>
 
 <!-- ── Login Modal ───────────────────────────────────────── -->
