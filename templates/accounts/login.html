@@ -349,11 +349,14 @@
         text-align: center;
     }
     .compilers-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 1rem;
-        max-width: 750px;
+        display: flex;
+        gap: 0.8rem;
+        width: max-content;
+        animation: marquee 30s linear infinite;
         margin: 2rem auto 0;
+    }
+    .compilers-grid:hover {
+        animation-play-state: paused;
     }
     .compiler-card {
         background: #F8FAFC;
@@ -376,6 +379,7 @@
     }
     .compiler-card i {
         font-size: 2.2rem;
+        color: #0066fe !important;
     }
     .compiler-card .cname {
         font-size: 0.72rem;
@@ -413,9 +417,13 @@
         display: inline-block;
     }
     .stack-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        display: flex;
         gap: 0.8rem;
+        width: max-content;
+        animation: marquee 30s linear infinite;
+    }
+    .stack-grid:hover {
+        animation-play-state: paused;
     }
     .stack-card {
         background: #fff;
@@ -436,6 +444,7 @@
     }
     .stack-card i {
         font-size: 2rem;
+        color: #0066fe !important;
     }
     .stack-card .sname {
         font-size: 0.7rem;
@@ -449,6 +458,11 @@
         gap: 0.6rem;
         margin-top: 1.5rem;
         justify-content: center;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
 
     /* ── Login Modal ────────────────────────────────────────── */
@@ -743,19 +757,33 @@
 <section class="section-compilers">
     <div class="section-label">Built-in IDE</div>
     <h2 class="section-title" style="text-align:center;">We are equipped with 12 Compilers</h2>
-    <div class="compilers-grid">
-        <div class="compiler-card"><i class="devicon-c-plain colored"></i><span class="cname">C</span></div>
-        <div class="compiler-card"><i class="devicon-cplusplus-plain colored"></i><span class="cname">C++</span></div>
-        <div class="compiler-card"><i class="devicon-java-plain colored"></i><span class="cname">Java</span></div>
-        <div class="compiler-card"><i class="devicon-python-plain colored"></i><span class="cname">Python</span></div>
-        <div class="compiler-card"><i class="devicon-javascript-plain colored"></i><span class="cname">JavaScript</span></div>
-        <div class="compiler-card"><i class="devicon-php-plain colored"></i><span class="cname">PHP</span></div>
-        <div class="compiler-card"><i class="devicon-typescript-plain colored"></i><span class="cname">TypeScript</span></div>
-        <div class="compiler-card"><i class="devicon-csharp-plain colored"></i><span class="cname">C#</span></div>
-        <div class="compiler-card"><i class="devicon-go-original-wordmark colored"></i><span class="cname">Go</span></div>
-        <div class="compiler-card"><i class="devicon-r-original colored"></i><span class="cname">R</span></div>
-        <div class="compiler-card"><i class="devicon-scala-plain colored"></i><span class="cname">Scala</span></div>
-        <div class="compiler-card"><i class="devicon-dot-net-plain colored"></i><span class="cname">.NET</span></div>
+        <!-- Original Items -->
+        <div class="compiler-card"><i class="devicon-c-plain"></i><span class="cname">C</span></div>
+        <div class="compiler-card"><i class="devicon-cplusplus-plain"></i><span class="cname">C++</span></div>
+        <div class="compiler-card"><i class="devicon-java-plain"></i><span class="cname">Java</span></div>
+        <div class="compiler-card"><i class="devicon-python-plain"></i><span class="cname">Python</span></div>
+        <div class="compiler-card"><i class="devicon-javascript-plain"></i><span class="cname">JavaScript</span></div>
+        <div class="compiler-card"><i class="devicon-php-plain"></i><span class="cname">PHP</span></div>
+        <div class="compiler-card"><i class="devicon-typescript-plain"></i><span class="cname">TypeScript</span></div>
+        <div class="compiler-card"><i class="devicon-csharp-plain"></i><span class="cname">C#</span></div>
+        <div class="compiler-card"><i class="devicon-go-original-wordmark"></i><span class="cname">Go</span></div>
+        <div class="compiler-card"><i class="devicon-r-original"></i><span class="cname">R</span></div>
+        <div class="compiler-card"><i class="devicon-scala-plain"></i><span class="cname">Scala</span></div>
+        <div class="compiler-card"><i class="devicon-dot-net-plain"></i><span class="cname">.NET</span></div>
+        
+        <!-- Duplicated Items for seamless loop -->
+        <div class="compiler-card"><i class="devicon-c-plain"></i><span class="cname">C</span></div>
+        <div class="compiler-card"><i class="devicon-cplusplus-plain"></i><span class="cname">C++</span></div>
+        <div class="compiler-card"><i class="devicon-java-plain"></i><span class="cname">Java</span></div>
+        <div class="compiler-card"><i class="devicon-python-plain"></i><span class="cname">Python</span></div>
+        <div class="compiler-card"><i class="devicon-javascript-plain"></i><span class="cname">JavaScript</span></div>
+        <div class="compiler-card"><i class="devicon-php-plain"></i><span class="cname">PHP</span></div>
+        <div class="compiler-card"><i class="devicon-typescript-plain"></i><span class="cname">TypeScript</span></div>
+        <div class="compiler-card"><i class="devicon-csharp-plain"></i><span class="cname">C#</span></div>
+        <div class="compiler-card"><i class="devicon-go-original-wordmark"></i><span class="cname">Go</span></div>
+        <div class="compiler-card"><i class="devicon-r-original"></i><span class="cname">R</span></div>
+        <div class="compiler-card"><i class="devicon-scala-plain"></i><span class="cname">Scala</span></div>
+        <div class="compiler-card"><i class="devicon-dot-net-plain"></i><span class="cname">.NET</span></div>
     </div>
 </section>
 
@@ -771,16 +799,29 @@
         <div class="stack-block">
             <h3 class="stack-heading"><span class="sh-dot" style="background:#3776AB;"></span> Python Full Stack Technologies</h3>
             <div class="stack-grid">
-                <div class="stack-card"><i class="devicon-python-plain colored"></i><span class="sname">Python</span></div>
-                <div class="stack-card"><i class="devicon-django-plain colored"></i><span class="sname">Django</span></div>
-                <div class="stack-card"><i class="devicon-html5-plain colored"></i><span class="sname">HTML5</span></div>
-                <div class="stack-card"><i class="devicon-css3-plain colored"></i><span class="sname">CSS3</span></div>
-                <div class="stack-card"><i class="devicon-javascript-plain colored"></i><span class="sname">JavaScript</span></div>
-                <div class="stack-card"><i class="devicon-react-original colored"></i><span class="sname">React</span></div>
-                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">MySQL</span></div>
-                <div class="stack-card"><i class="devicon-sqlite-plain colored"></i><span class="sname">SQLite</span></div>
-                <div class="stack-card"><i class="devicon-git-plain colored"></i><span class="sname">Git</span></div>
-                <div class="stack-card"><i class="devicon-github-original colored"></i><span class="sname">GitHub</span></div>
+                <!-- Original Items -->
+                <div class="stack-card"><i class="devicon-python-plain"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-django-plain"></i><span class="sname">Django</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-sqlite-plain"></i><span class="sname">SQLite</span></div>
+                <div class="stack-card"><i class="devicon-git-plain"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-github-original"></i><span class="sname">GitHub</span></div>
+
+                <!-- Duplicated Items for seamless loop -->
+                <div class="stack-card"><i class="devicon-python-plain"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-django-plain"></i><span class="sname">Django</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-sqlite-plain"></i><span class="sname">SQLite</span></div>
+                <div class="stack-card"><i class="devicon-git-plain"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-github-original"></i><span class="sname">GitHub</span></div>
             </div>
         </div>
 
@@ -788,18 +829,33 @@
         <div class="stack-block">
             <h3 class="stack-heading"><span class="sh-dot" style="background:#f89820;"></span> Java Full Stack Technologies</h3>
             <div class="stack-grid">
-                <div class="stack-card"><i class="devicon-java-plain colored"></i><span class="sname">Java</span></div>
-                <div class="stack-card"><i class="devicon-spring-plain colored"></i><span class="sname">Spring Boot</span></div>
-                <div class="stack-card"><i class="devicon-hibernate-plain colored"></i><span class="sname">Hibernate</span></div>
-                <div class="stack-card"><i class="devicon-html5-plain colored"></i><span class="sname">HTML5</span></div>
-                <div class="stack-card"><i class="devicon-css3-plain colored"></i><span class="sname">CSS3</span></div>
-                <div class="stack-card"><i class="devicon-javascript-plain colored"></i><span class="sname">JavaScript</span></div>
-                <div class="stack-card"><i class="devicon-react-original colored"></i><span class="sname">React</span></div>
-                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">MySQL</span></div>
-                <div class="stack-card"><i class="devicon-postgresql-plain colored"></i><span class="sname">PostgreSQL</span></div>
-                <div class="stack-card"><i class="devicon-docker-plain colored"></i><span class="sname">Docker</span></div>
-                <div class="stack-card"><i class="devicon-git-plain colored"></i><span class="sname">Git</span></div>
-                <div class="stack-card"><i class="devicon-amazonwebservices-plain-wordmark colored"></i><span class="sname">AWS</span></div>
+                <!-- Original Items -->
+                <div class="stack-card"><i class="devicon-java-plain"></i><span class="sname">Java</span></div>
+                <div class="stack-card"><i class="devicon-spring-plain"></i><span class="sname">Spring Boot</span></div>
+                <div class="stack-card"><i class="devicon-hibernate-plain"></i><span class="sname">Hibernate</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-postgresql-plain"></i><span class="sname">PostgreSQL</span></div>
+                <div class="stack-card"><i class="devicon-docker-plain"></i><span class="sname">Docker</span></div>
+                <div class="stack-card"><i class="devicon-git-plain"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-amazonwebservices-plain-wordmark"></i><span class="sname">AWS</span></div>
+
+                <!-- Duplicated Items for seamless loop -->
+                <div class="stack-card"><i class="devicon-java-plain"></i><span class="sname">Java</span></div>
+                <div class="stack-card"><i class="devicon-spring-plain"></i><span class="sname">Spring Boot</span></div>
+                <div class="stack-card"><i class="devicon-hibernate-plain"></i><span class="sname">Hibernate</span></div>
+                <div class="stack-card"><i class="devicon-html5-plain"></i><span class="sname">HTML5</span></div>
+                <div class="stack-card"><i class="devicon-css3-plain"></i><span class="sname">CSS3</span></div>
+                <div class="stack-card"><i class="devicon-javascript-plain"></i><span class="sname">JavaScript</span></div>
+                <div class="stack-card"><i class="devicon-react-original"></i><span class="sname">React</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">MySQL</span></div>
+                <div class="stack-card"><i class="devicon-postgresql-plain"></i><span class="sname">PostgreSQL</span></div>
+                <div class="stack-card"><i class="devicon-docker-plain"></i><span class="sname">Docker</span></div>
+                <div class="stack-card"><i class="devicon-git-plain"></i><span class="sname">Git</span></div>
+                <div class="stack-card"><i class="devicon-amazonwebservices-plain-wordmark"></i><span class="sname">AWS</span></div>
             </div>
         </div>
 
@@ -807,16 +863,29 @@
         <div class="stack-block">
             <h3 class="stack-heading"><span class="sh-dot" style="background:#4CAF50;"></span> Data Analytics Technologies</h3>
             <div class="stack-grid">
-                <div class="stack-card"><i class="devicon-python-plain colored"></i><span class="sname">Python</span></div>
-                <div class="stack-card"><i class="devicon-r-original colored"></i><span class="sname">R</span></div>
-                <div class="stack-card"><i class="devicon-mysql-plain colored"></i><span class="sname">SQL</span></div>
-                <div class="stack-card"><i class="devicon-numpy-original colored"></i><span class="sname">NumPy</span></div>
-                <div class="stack-card"><i class="devicon-pandas-original colored"></i><span class="sname">Pandas</span></div>
-                <div class="stack-card"><i class="devicon-matplotlib-plain colored"></i><span class="sname">Matplotlib</span></div>
-                <div class="stack-card"><i class="devicon-tensorflow-original colored"></i><span class="sname">TensorFlow</span></div>
-                <div class="stack-card"><i class="devicon-jupyter-plain colored"></i><span class="sname">Jupyter</span></div>
-                <div class="stack-card"><i class="devicon-kaggle-original colored"></i><span class="sname">Kaggle</span></div>
-                <div class="stack-card"><i class="devicon-apachespark-original colored"></i><span class="sname">Spark</span></div>
+                <!-- Original Items -->
+                <div class="stack-card"><i class="devicon-python-plain"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-r-original"></i><span class="sname">R</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">SQL</span></div>
+                <div class="stack-card"><i class="devicon-numpy-original"></i><span class="sname">NumPy</span></div>
+                <div class="stack-card"><i class="devicon-pandas-original"></i><span class="sname">Pandas</span></div>
+                <div class="stack-card"><i class="devicon-matplotlib-plain"></i><span class="sname">Matplotlib</span></div>
+                <div class="stack-card"><i class="devicon-tensorflow-original"></i><span class="sname">TensorFlow</span></div>
+                <div class="stack-card"><i class="devicon-jupyter-plain"></i><span class="sname">Jupyter</span></div>
+                <div class="stack-card"><i class="devicon-kaggle-original"></i><span class="sname">Kaggle</span></div>
+                <div class="stack-card"><i class="devicon-apachespark-original"></i><span class="sname">Spark</span></div>
+
+                <!-- Duplicated Items for seamless loop -->
+                <div class="stack-card"><i class="devicon-python-plain"></i><span class="sname">Python</span></div>
+                <div class="stack-card"><i class="devicon-r-original"></i><span class="sname">R</span></div>
+                <div class="stack-card"><i class="devicon-mysql-plain"></i><span class="sname">SQL</span></div>
+                <div class="stack-card"><i class="devicon-numpy-original"></i><span class="sname">NumPy</span></div>
+                <div class="stack-card"><i class="devicon-pandas-original"></i><span class="sname">Pandas</span></div>
+                <div class="stack-card"><i class="devicon-matplotlib-plain"></i><span class="sname">Matplotlib</span></div>
+                <div class="stack-card"><i class="devicon-tensorflow-original"></i><span class="sname">TensorFlow</span></div>
+                <div class="stack-card"><i class="devicon-jupyter-plain"></i><span class="sname">Jupyter</span></div>
+                <div class="stack-card"><i class="devicon-kaggle-original"></i><span class="sname">Kaggle</span></div>
+                <div class="stack-card"><i class="devicon-apachespark-original"></i><span class="sname">Spark</span></div>
             </div>
         </div>
 
