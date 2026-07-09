@@ -667,11 +667,10 @@
 <section class="lp-hero">
     <div class="hero-left">
         <div class="hero-badge">
-            <i class="fa-solid fa-graduation-cap"></i> All Tech Stacks Supported
+            <i class="fa-solid fa-graduation-cap"></i> <span id="typed-text"></span>
         </div>
         <h1 class="hero-title">
-            Start your preparation<br>with <span class="typed-prefix">Destination Career:</span><br>
-            <span class="typed-word" id="typed-text"></span>
+            Start your preparation<br>with <span class="typed-prefix">Destination Career.</span>
         </h1>
         <p class="hero-subtitle">
             <span>Interactive Courses</span>, Top notch Assessments,<br>
@@ -884,7 +883,7 @@
 {% block extra_js %}
 <script>
     // ── Typed text effect ───────────────────────────────────
-    const words = ['Mock Series.', 'Test Series.', 'Live Courses.', 'Job Placements.'];
+    const words = ['All Tech Stacks Supported', 'Live Courses', 'Mock Interviews', 'Job Placements'];
     let wIdx = 0, cIdx = 0, deleting = false;
     const el = document.getElementById('typed-text');
 
